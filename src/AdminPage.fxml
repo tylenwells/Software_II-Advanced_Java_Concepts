@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AdminPage">
+   <children>
+      <Label layoutX="206.0" layoutY="31.0" text="Administrative Settings">
+         <font>
+            <Font name="Calibri" size="20.0" />
+         </font>
+      </Label>
+      <CheckBox layoutX="284.0" layoutY="92.0" mnemonicParsing="false" />
+      <TextField disable="true" layoutX="284.0" layoutY="123.0" prefHeight="25.0" prefWidth="226.0" />
+      <Label layoutX="121.0" layoutY="92.0" text="Enable User Access Logging:" />
+      <Label disable="true" layoutX="168.0" layoutY="127.0" text="Log File to Append:" />
+      <Button disable="true" layoutX="470.0" layoutY="150.0" mnemonicParsing="false" text="Edit" />
+      <Button layoutX="251.0" layoutY="347.0" mnemonicParsing="false" text="Save" />
+      <Button layoutX="301.0" layoutY="347.0" mnemonicParsing="false" text="Cancel" />
+   </children>
+</AnchorPane>

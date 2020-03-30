@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AppointmentLookup">
+   <children>
+      <Pane fx:id="CustomerLookupPane" disable="true" prefHeight="576.0" prefWidth="1024.0" visible="false">
+         <children>
+            <TableView layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
+              <columns>
+                <TableColumn prefWidth="75.0" resizable="false" text="Customer ID" />
+                <TableColumn prefWidth="231.0" resizable="false" text="Customer Name" />
+                  <TableColumn prefWidth="60.0" resizable="false" text="Is Active" />
+                  <TableColumn prefWidth="300.0" resizable="false" text="Customer Address" />
+              </columns>
+            </TableView>
+            <Label layoutX="79.0" layoutY="36.0" text="Customer Lookup">
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+            <RadioButton layoutX="94.0" layoutY="115.0" mnemonicParsing="false" text="Customer ID" />
+            <RadioButton layoutX="94.0" layoutY="139.0" mnemonicParsing="false" text="Customer Name" />
+            <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
+            <Button layoutX="112.0" layoutY="263.0" mnemonicParsing="false" text="Search" />
+            <TextField layoutX="107.0" layoutY="188.0" />
+            <Label layoutX="46.0" layoutY="192.0" text="Name/ID:" />
+            <RadioButton layoutX="120.0" layoutY="220.0" mnemonicParsing="false" text="Contains" />
+            <RadioButton layoutX="200.0" layoutY="220.0" mnemonicParsing="false" text="Exact" />
+            <Button layoutX="307.0" layoutY="481.0" mnemonicParsing="false" text="Add New Customer" />
+            <Button layoutX="442.0" layoutY="481.0" mnemonicParsing="false" text="Modify Selected Customer" />
+            <Button layoutX="868.0" layoutY="481.0" mnemonicParsing="false" text="Delete Customer" />
+            <Button layoutX="958.0" layoutY="537.0" mnemonicParsing="false" text="Cancel" />
+         </children>
+      </Pane>
+      <Pane fx:id="AppointmentLookupPane" disable="true" prefHeight="576.0" prefWidth="1024.0" visible="false">
+         <children>
+            <TableView layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
+               <columns>
+                  <TableColumn prefWidth="75.0" resizable="false" text="ID#" />
+                  <TableColumn prefWidth="231.0" resizable="false" text="Customer Name" />
+                  <TableColumn prefWidth="125.0" resizable="false" text="Date/Time" />
+                  <TableColumn prefWidth="150.0" resizable="false" text="Consultant" />
+                  <TableColumn prefWidth="85.0" resizable="false" text="Title" />
+               </columns>
+            </TableView>
+            <Label layoutX="67.0" layoutY="38.0" text="Appointment Lookup">
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+            <RadioButton layoutX="94.0" layoutY="115.0" mnemonicParsing="false" text="Appointment ID" />
+            <RadioButton layoutX="94.0" layoutY="139.0" mnemonicParsing="false" text="Customer Name" />
+            <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
+            <Button layoutX="112.0" layoutY="298.0" mnemonicParsing="false" text="Search" />
+            <TextField layoutX="107.0" layoutY="223.0" />
+            <Label layoutX="25.0" layoutY="227.0" text="Name/ID/Title:" />
+            <RadioButton layoutX="120.0" layoutY="255.0" mnemonicParsing="false" text="Contains" />
+            <RadioButton layoutX="200.0" layoutY="255.0" mnemonicParsing="false" text="Exact" />
+            <Button layoutX="307.0" layoutY="481.0" mnemonicParsing="false" text="Add New Appointment" />
+            <Button layoutX="458.0" layoutY="481.0" mnemonicParsing="false" text="Modify Selected Appointment" />
+            <Button layoutX="849.0" layoutY="481.0" mnemonicParsing="false" text="Delete Appointment" />
+            <Button layoutX="958.0" layoutY="537.0" mnemonicParsing="false" text="Cancel" />
+            <RadioButton layoutX="94.0" layoutY="163.0" mnemonicParsing="false" text="Consultant Name" />
+            <RadioButton layoutX="94.0" layoutY="187.0" mnemonicParsing="false" text="Appointment Title" />
+         </children>
+      </Pane>
+      <Pane fx:id="ConsultantLookupPane" disable="true" prefHeight="576.0" prefWidth="1024.0">
+         <children>
+            <TableView layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
+               <columns>
+                  <TableColumn prefWidth="75.0" resizable="false" text="ID#" />
+                  <TableColumn prefWidth="381.0" resizable="false" text="Consultant Name" />
+                  <TableColumn prefWidth="60.0" resizable="false" text="Is Active" />
+                  <TableColumn prefWidth="150.0" resizable="false" text="Last Updated Date" />
+               </columns>
+            </TableView>
+            <Label layoutX="79.0" layoutY="36.0" text="Consultant Lookup">
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+            <RadioButton layoutX="94.0" layoutY="115.0" mnemonicParsing="false" text="Consultant ID" />
+            <RadioButton layoutX="94.0" layoutY="139.0" mnemonicParsing="false" text="Consultant Name" />
+            <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
+            <Button layoutX="112.0" layoutY="263.0" mnemonicParsing="false" text="Search" />
+            <TextField layoutX="107.0" layoutY="188.0" />
+            <Label layoutX="46.0" layoutY="192.0" text="Name/ID:" />
+            <RadioButton layoutX="120.0" layoutY="220.0" mnemonicParsing="false" text="Contains" />
+            <RadioButton layoutX="200.0" layoutY="220.0" mnemonicParsing="false" text="Exact" />
+            <Button layoutX="958.0" layoutY="537.0" mnemonicParsing="false" text="Cancel" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

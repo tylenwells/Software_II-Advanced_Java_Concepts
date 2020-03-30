@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane disable="true" prefHeight="400.0" prefWidth="600.0" visible="false" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FindPage">
+   <children>
+      <Pane fx:id="FindConsultantPane" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <TableView layoutX="222.0" layoutY="12.0" prefHeight="345.0" prefWidth="356.0">
+              <columns>
+                <TableColumn editable="false" prefWidth="100.0" resizable="false" text="Consultant ID#" />
+                <TableColumn editable="false" prefWidth="256.0" resizable="false" text="Consultant Name" />
+              </columns>
+            </TableView>
+            <Label layoutX="49.0" layoutY="28.0" text="Find Consultant">
+
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+             <RadioButton layoutX="54.0" layoutY="109.0" mnemonicParsing="false" text="Consultant ID" />
+             <RadioButton layoutX="54.0" layoutY="133.0" mnemonicParsing="false" text="Consultant Name" />
+             <Label layoutX="68.0" layoutY="84.0" text="Search via: " />
+             <Button layoutX="87.0" layoutY="238.0" mnemonicParsing="false" text="Search" />
+             <TextField layoutX="75.0" layoutY="165.0" prefHeight="25.0" prefWidth="136.0" />
+             <Label layoutX="14.0" layoutY="169.0" text="Name/ID:" />
+             <RadioButton layoutX="46.0" layoutY="200.0" mnemonicParsing="false" text="Contains" />
+             <RadioButton layoutX="126.0" layoutY="200.0" mnemonicParsing="false" text="Exact" />
+             <Button layoutX="526.0" layoutY="361.0" mnemonicParsing="false" text="Cancel" />
+            <Button layoutX="222.0" layoutY="361.0" mnemonicParsing="false" text="Use Selected Consultant" />
+         </children></Pane>
+      <Pane fx:id="FindCustomerPane" disable="true" prefHeight="400.0" prefWidth="600.0" visible="false">
+         <children>
+            <TableView layoutX="222.0" layoutY="12.0" prefHeight="345.0" prefWidth="356.0">
+               <columns>
+                  <TableColumn editable="false" prefWidth="100.0" resizable="false" text="Customer ID#" />
+                  <TableColumn editable="false" prefWidth="256.0" resizable="false" text="Customer Name" />
+               </columns>
+            </TableView>
+            <Label layoutX="49.0" layoutY="28.0" text="Find Customer">
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+            <RadioButton layoutX="54.0" layoutY="109.0" mnemonicParsing="false" text="Customer ID" />
+            <RadioButton layoutX="54.0" layoutY="133.0" mnemonicParsing="false" text="Customer Name" />
+            <Label layoutX="68.0" layoutY="84.0" text="Search via: " />
+            <Button layoutX="87.0" layoutY="238.0" mnemonicParsing="false" text="Search" />
+            <TextField layoutX="75.0" layoutY="165.0" prefHeight="25.0" prefWidth="136.0" />
+            <Label layoutX="14.0" layoutY="169.0" text="Name/ID:" />
+            <RadioButton layoutX="46.0" layoutY="200.0" mnemonicParsing="false" text="Contains" />
+            <RadioButton layoutX="126.0" layoutY="200.0" mnemonicParsing="false" text="Exact" />
+            <Button layoutX="526.0" layoutY="361.0" mnemonicParsing="false" text="Cancel" />
+            <Button layoutX="222.0" layoutY="361.0" mnemonicParsing="false" text="Use Selected Customer" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
