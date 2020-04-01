@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.function.Function;
 
 
 public class JDBCHelper {
@@ -59,7 +60,6 @@ public class JDBCHelper {
             }
 
         }
-
         catch (SQLException ex)
         {
             System.out.println("Exception while executing statement. Terminating program... " + ex.getMessage());
@@ -70,4 +70,29 @@ public class JDBCHelper {
         }
         return false;
     }
+
+    Function<String, ResultSet> runQuery = (String s1) -> {
+        try {
+            Statement stmt = connection.createStatement();
+            return stmt.executeQuery(s1);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("Exception while executing statement. Terminating program... " + ex.getMessage());
+        }
+
+        return null;
+    } ;
+
+    Function<String, Integer> runDMS  = (String s1) -> {
+
+        try {
+            Statement stmt = connection.createStatement();
+            return stmt.executeUpdate(s1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    };
 }
