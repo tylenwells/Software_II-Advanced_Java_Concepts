@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class Main extends Application {
 
@@ -47,4 +48,6 @@ public class Main extends Application {
     public static JDBCHelper getDBHelper(){
         return jdbcHelper;
     }
+
+
 }

@@ -22,6 +22,8 @@ public class JDBCHelper {
         }
         try {
             connection = DriverManager.getConnection(URL, user, password);
+            Statement stmt = connection.createStatement();
+            stmt.executeQuery("SET time_zone = '+00:00'");
         } catch (SQLException ex) {
             System.out.println("Error getting connection: " + ex.getMessage());
             System.exit(-1);
