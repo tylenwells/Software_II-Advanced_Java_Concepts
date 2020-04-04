@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 
 import java.awt.*;
 import java.net.URL;
@@ -117,6 +118,7 @@ public class HomePage implements Initializable {
     public GridPane WeeklyViewGridPane;
 
     //member variables
+    final ToggleGroup calview = new ToggleGroup();
     String currentuser = null;
     Appointment[] weeklyApptArray = new Appointment[256];
     Appointment[] monthlyApptArray = new Appointment[256];
@@ -124,7 +126,8 @@ public class HomePage implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        weeklyviewratio.setToggleGroup(calview);
+        monthlyviewratio.setToggleGroup(calview);
     }
 
 //interface action methods
@@ -157,6 +160,7 @@ public class HomePage implements Initializable {
     }
 
     public void weeklyviewratioselected(ActionEvent actionEvent) {
+
         WeeklyViewGridPane.setDisable(false);
         fillWeeklyTable();
         WeeklyViewGridPane.setVisible(true);
@@ -223,13 +227,13 @@ public class HomePage implements Initializable {
 
 public void fillWeeklyTable() {
 
-        SundayList.getItems().removeAll();
-        MondayList.getItems().removeAll();
-        TuesdayList.getItems().removeAll();
-        WednesdayList.getItems().removeAll();
-        ThursdayList.getItems().removeAll();
-        FridayList.getItems().removeAll();
-        SaturdayList.getItems().removeAll();
+        SundayList.getItems().clear();
+        MondayList.getItems().clear();
+        TuesdayList.getItems().clear();
+        WednesdayList.getItems().clear();
+        ThursdayList.getItems().clear();
+        FridayList.getItems().clear();
+        SaturdayList.getItems().clear();
 
         SundayList.getItems().add(" ");
         MondayList.getItems().add(" ");
@@ -277,19 +281,29 @@ public void fillWeeklyTable() {
         LocalDateTime Saturday = Sunday.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
 
         WeeklySundayLabel.textProperty().set("Sun (" + Sunday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklySundayLabel.setLayoutX((21.0+70.0-(WeeklySundayLabel.widthProperty().doubleValue()*.5)));
         WeeklyMondayLabel.textProperty().set("Mon (" + Monday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklyMondayLabel.setLayoutX((21.0+140.0-(WeeklyMondayLabel.widthProperty().doubleValue()*.5)));
         WeeklyTuesdayLabel.textProperty().set("Tue (" + Tuesday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklyTuesdayLabel.setLayoutX((21.0+210.0-(WeeklyTuesdayLabel.widthProperty().doubleValue()*.5)));
         WeeklyWednesdayLabel.textProperty().set("Wed (" + Wednesday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklyWednesdayLabel.setLayoutX((21.0+280.0-(WeeklyWednesdayLabel.widthProperty().doubleValue()*.5)));
         WeeklyThursdayLabel.textProperty().set("Thu (" + Thursday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklyThursdayLabel.setLayoutX((21.0+350.0-(WeeklyThursdayLabel.widthProperty().doubleValue()*.5)));
         WeeklyFridayLabel.textProperty().set("Fri (" + Friday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklyFridayLabel.setLayoutX((21.0+420.0-(WeeklyFridayLabel.widthProperty().doubleValue()*.5)));
         WeeklySaturdayLabel.textProperty().set("Sat (" + Saturday.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + ")");
-        WeeklySaturdayLabel.setLayoutX((21.0+490.0-(WeeklySaturdayLabel.widthProperty().doubleValue()*.5)));
+
+    //WeeklySundayLabel.setMinWidth(140.0) ;
+    WeeklySundayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklyMondayLabel.setPrefWidth(140.0);
+    WeeklyMondayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklyTuesdayLabel.setPrefWidth(140.0);
+    WeeklyTuesdayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklyWednesdayLabel.setPrefWidth(140.0);
+    WeeklyWednesdayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklyThursdayLabel.setPrefWidth(140.0);
+    WeeklyThursdayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklyFridayLabel.setPrefWidth(140.0);
+    WeeklyFridayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+    WeeklySaturdayLabel.setPrefWidth(140.0);
+    WeeklySaturdayLabel.textAlignmentProperty().set(TextAlignment.CENTER);
+
+
 
         for (Appointment a : weeklyApptArray) {
             if (a == null) {

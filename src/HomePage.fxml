@@ -75,7 +75,7 @@
                         <Font name="Calibri" size="22.0" />
                      </font>
                   </Label>
-                  <GridPane fx:id="WeeklyViewGridPane" disable="true" layoutX="21.0" layoutY="180.0" prefHeight="522.0" prefWidth="978.0" visible="false">
+                  <GridPane fx:id="WeeklyViewGridPane" layoutX="21.0" layoutY="180.0" prefHeight="522.0" prefWidth="978.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -98,13 +98,13 @@
                         <ListView fx:id="SaturdayList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" />
                      </children>
                   </GridPane>
-                  <Label fx:id="WeeklyMondayLabel" disable="true" layoutX="221.0" layoutY="160.0" prefHeight="17.0" prefWidth="28.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyTuesdayLabel" disable="true" layoutX="357.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklySundayLabel" disable="true" layoutX="77.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyWednesdayLabel" disable="true" layoutX="496.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyThursdayLabel" disable="true" layoutX="639.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyFridayLabel" disable="true" layoutX="771.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklySaturdayLabel" disable="true" layoutX="916.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklySundayLabel" disable="true" layoutX="21.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyMondayLabel" disable="true" layoutX="161.0" layoutY="160.0" prefHeight="17.0" prefWidth="28.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyTuesdayLabel" disable="true" layoutX="301.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyWednesdayLabel" disable="true" layoutX="441.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyThursdayLabel" disable="true" layoutX="581.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyFridayLabel" disable="true" layoutX="721.0" layoutY="160.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklySaturdayLabel" disable="true" layoutX="861.0" layoutY="160.0" text="Label" visible="false" />
                </children></AnchorPane>
         </items>
       </SplitPane>
