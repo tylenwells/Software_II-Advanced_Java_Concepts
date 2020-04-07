@@ -23,6 +23,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class LoginPage implements Initializable {
@@ -103,12 +104,12 @@ lang = 2;
               int config = checkStoredSettings(Main.getDBHelper().runQuery.apply("SELECT * FROM clientsettings;"));
               if (config == 1) {
                   try {
-                      Files.write(Paths.get(logpath), ("\nUser: " + username.get() + " logged in at " + Date.valueOf(LocalDate.now()) + " " + Time.valueOf(LocalTime.now()) + ".").getBytes(), StandardOpenOption.APPEND);
+                      Files.write(Paths.get(logpath), ("User: " + username.get() + " logged in at " + Date.valueOf(LocalDate.now()) + " " + Time.valueOf(LocalTime.now()) + "." + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
                   }
                   catch (IOException ie) {
                       try {
                           Files.createFile(Paths.get(logpath));
-                          Files.write(Paths.get(logpath), ("\nUser: " + username.get() + " logged in at " + Date.valueOf(LocalDate.now()) + " " + Time.valueOf(LocalTime.now()) + ".").getBytes(), StandardOpenOption.APPEND);
+                          Files.write(Paths.get(logpath), ("User: " + username.get() + " logged in at " + Date.valueOf(LocalDate.now()) + " " + Time.valueOf(LocalTime.now()) + "." + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
                       }
                       catch (IOException i) {
                           System.out.println("Failed to write to or create file.");
@@ -154,7 +155,6 @@ lang = 2;
 
                 if (r.getObject(1).toString().equals(InetAddress.getLocalHost().getHostName())){
                     check = true;
-                    String debugvar = r.getObject(3).toString();
                     if (r.getObject(3).toString().contains("true")) {
                         audit = true;
                         setLogpath(r.getObject(4).toString());
@@ -183,7 +183,10 @@ lang = 2;
             System.out.println("Unknown Host Exception. Terminating Program..." + e.getMessage());
             return -1;
         }
+
+
 }
+
 
     public void dms(int i) { }
 

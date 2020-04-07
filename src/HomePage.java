@@ -2,23 +2,34 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -196,6 +207,19 @@ public class HomePage implements Initializable {
 //interface action methods
 
     public void logoutbuttonpressed(ActionEvent actionEvent) {
+        boolean check = false;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Logout");
+        alert.setContentText("Are you sure you want to log out and return to the login screen?");
+        alert.getButtonTypes().set(0, ButtonType.YES);
+        alert.getButtonTypes().set(1, ButtonType.NO);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.YES) check = true;
+        if (check){
+            Stage stage = (Stage) logoutbutton.getScene().getWindow();
+            stage.close();
+        }
     }
 
     public void customerbuttonpressed(ActionEvent actionEvent) {
@@ -208,8 +232,17 @@ public class HomePage implements Initializable {
     }
 
     public void adminbuttonpressed(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminPage.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
-
     public void monthlyapptbytyperatioselected(ActionEvent actionEvent) {
     }
 
@@ -880,6 +913,7 @@ public void fillWeeklyTable() {
             catch (IndexOutOfBoundsException | NullPointerException ignored){}
         }
     }
+
 
 
 

@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AdminPage">
    <children>
       <Label layoutX="206.0" layoutY="31.0" text="Administrative Settings">
@@ -12,12 +11,12 @@
             <Font name="Calibri" size="20.0" />
          </font>
       </Label>
-      <CheckBox layoutX="284.0" layoutY="92.0" mnemonicParsing="false" />
-      <TextField disable="true" layoutX="284.0" layoutY="123.0" prefHeight="25.0" prefWidth="226.0" />
+      <CheckBox fx:id="enableduseraccessloggingcheckbox" layoutX="284.0" layoutY="92.0" mnemonicParsing="false" onAction="#enableuseraccessloggingcheckboxchanged" />
+      <TextField fx:id="filepathtextfield" disable="true" editable="false" layoutX="284.0" layoutY="123.0" prefHeight="25.0" prefWidth="226.0" />
       <Label layoutX="121.0" layoutY="92.0" text="Enable User Access Logging:" />
-      <Label disable="true" layoutX="168.0" layoutY="127.0" text="Log File to Append:" />
-      <Button disable="true" layoutX="470.0" layoutY="150.0" mnemonicParsing="false" text="Edit" />
-      <Button layoutX="251.0" layoutY="347.0" mnemonicParsing="false" text="Save" />
-      <Button layoutX="301.0" layoutY="347.0" mnemonicParsing="false" text="Cancel" />
+      <Label fx:id="logfilepathlabel" disable="true" layoutX="168.0" layoutY="127.0" text="Log File to Append:" />
+      <Button fx:id="editfilepathbutton" disable="true" layoutX="470.0" layoutY="150.0" mnemonicParsing="false" onAction="#editfilepathbuttonpressed" text="Edit" />
+      <Button fx:id="savebutton" layoutX="251.0" layoutY="347.0" mnemonicParsing="false" onAction="#savebuttonpressed" text="Save" />
+      <Button fx:id="cancelbutton" layoutX="301.0" layoutY="347.0" mnemonicParsing="false" onAction="#cancelbuttonpressed" text="Cancel" />
    </children>
 </AnchorPane>
