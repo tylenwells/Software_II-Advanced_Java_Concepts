@@ -46,28 +46,6 @@
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TableView fx:id="WeeklyTableView" layoutX="30.0" layoutY="163.0" prefHeight="490.0" prefWidth="959.0" visible="false">
-                    <columns>
-                      <TableColumn fx:id="WeeklySunColumn" prefWidth="137.0" text="Sunday" />
-                      <TableColumn fx:id="WeeklyMonColumn" prefWidth="137.0" text="Monday" />
-                        <TableColumn fx:id="WeeklyTueColumn" prefWidth="137.0" text="Tuesday" />
-                        <TableColumn fx:id="WeeklyWedColumn" prefWidth="137.0" text="Wednesday" />
-                        <TableColumn fx:id="WeeklyThuColumn" prefWidth="137.0" text="Thursday" />
-                        <TableColumn fx:id="WeeklyFriColumn" prefWidth="137.0" text="Friday" />
-                        <TableColumn fx:id="WeeklySatColumn" prefWidth="137.0" text="Saturday" />
-                    </columns>
-                  </TableView>
-                  <TableView fx:id="MonthlyTableView" disable="true" layoutX="30.0" layoutY="163.0" prefHeight="490.0" prefWidth="959.0" visible="false">
-                     <columns>
-                        <TableColumn fx:id="MonSunColumn" prefWidth="137.0" text="Sunday" />
-                        <TableColumn fx:id="MonthlyMonColumn" prefWidth="137.0" text="Monday" />
-                        <TableColumn fx:id="MonthlyTueColumn" prefWidth="137.0" text="Tuesday" />
-                        <TableColumn fx:id="MonthlyWedColumn" prefWidth="137.0" text="Wednesday" />
-                        <TableColumn fx:id="MonThuColumn" prefWidth="137.0" text="Thursday" />
-                        <TableColumn fx:id="MonFriCol" prefWidth="137.0" text="Friday" />
-                        <TableColumn fx:id="MonSatColumn" prefWidth="137.0" text="Saturday" />
-                     </columns>
-                  </TableView>
                   <RadioButton fx:id="weeklyviewratio" layoutX="30.0" layoutY="77.0" mnemonicParsing="false" onAction="#weeklyviewratioselected" text="Weekly View" />
                   <RadioButton fx:id="monthlyviewratio" layoutX="30.0" layoutY="52.0" mnemonicParsing="false" onAction="#monthlyviewratioselected" text="Monthly View" />
                   <Label layoutX="30.0" layoutY="14.0" text="Calendar View" textAlignment="CENTER">
@@ -75,7 +53,7 @@
                         <Font name="Calibri" size="22.0" />
                      </font>
                   </Label>
-                  <GridPane fx:id="WeeklyViewGridPane" layoutX="21.0" layoutY="180.0" prefHeight="522.0" prefWidth="978.0">
+                  <GridPane fx:id="WeeklyViewGridPane" disable="true" layoutX="21.0" layoutY="180.0" prefHeight="522.0" prefWidth="978.0" visible="false">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -98,14 +76,90 @@
                         <ListView fx:id="SaturdayList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" />
                      </children>
                   </GridPane>
-                  <Label fx:id="WeeklySundayLabel" disable="true" layoutX="21.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyMondayLabel" disable="true" layoutX="161.0" layoutY="160.0" prefHeight="17.0" prefWidth="28.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyTuesdayLabel" disable="true" layoutX="301.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyWednesdayLabel" disable="true" layoutX="441.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyThursdayLabel" disable="true" layoutX="581.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklyFridayLabel" disable="true" layoutX="721.0" layoutY="160.0" text="Label" visible="false" />
-                  <Label fx:id="WeeklySaturdayLabel" disable="true" layoutX="861.0" layoutY="160.0" text="Label" visible="false" />
-               </children></AnchorPane>
+                  <Label fx:id="WeeklySundayLabel" alignment="CENTER" disable="true" layoutX="21.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyMondayLabel" alignment="CENTER" disable="true" layoutX="161.0" layoutY="160.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyTuesdayLabel" alignment="CENTER" disable="true" layoutX="301.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyWednesdayLabel" alignment="CENTER" disable="true" layoutX="441.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyThursdayLabel" alignment="CENTER" disable="true" layoutX="581.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklyFridayLabel" alignment="CENTER" disable="true" layoutX="721.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Label fx:id="WeeklySaturdayLabel" alignment="CENTER" disable="true" layoutX="861.0" layoutY="160.0" prefWidth="140.0" text="Label" visible="false" />
+                  <GridPane fx:id="MonthlyViewGridPane" disable="true" layoutX="21.0" layoutY="180.0" prefHeight="522.0" prefWidth="978.0" visible="false">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ListView fx:id="mon36" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5" />
+                        <ListView fx:id="mon37" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ListView disable="true" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <ListView disable="true" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <ListView disable="true" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                        <ListView disable="true" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                        <ListView disable="true" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                        <ListView fx:id="mon01" prefHeight="200.0" prefWidth="200.0" />
+                        <ListView fx:id="mon02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                        <ListView fx:id="mon03" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+                        <ListView fx:id="mon04" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" />
+                        <ListView fx:id="mon05" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" />
+                        <ListView fx:id="mon06" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" />
+                        <ListView fx:id="mon07" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" />
+                        <ListView fx:id="mon08" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon09" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon10" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon11" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon12" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon13" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon14" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                        <ListView fx:id="mon15" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon16" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon17" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon18" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon19" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon20" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon21" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                        <ListView fx:id="mon22" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon23" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon24" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon25" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon26" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon27" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon28" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                        <ListView fx:id="mon29" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon30" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon31" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon32" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon33" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon34" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                        <ListView fx:id="mon35" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                     </children>
+                  </GridPane>
+                  <Label fx:id="MonthlySundayLabel" alignment="CENTER" disable="true" layoutX="21.0" layoutY="160.0" prefWidth="140.0" text="Sunday" textAlignment="CENTER" visible="false" />
+                  <Label fx:id="MonthlyMondayLabel" alignment="CENTER" disable="true" layoutX="161.0" layoutY="160.0" prefWidth="140.0" text="Monday" textAlignment="CENTER" visible="false" />
+                  <Label fx:id="MonthlyTuesdayLabel" alignment="CENTER" disable="true" layoutX="301.0" layoutY="160.0" prefWidth="140.0" text="Tuesday" visible="false" />
+                  <Label fx:id="MonthlyWednesdayLabel" alignment="CENTER" disable="true" layoutX="441.0" layoutY="160.0" prefWidth="140.0" text="Wednesday" visible="false" />
+                  <Label fx:id="MonthlyThursdayLabel" alignment="CENTER" disable="true" layoutX="581.0" layoutY="160.0" prefWidth="140.0" text="Thursday" visible="false" />
+                  <Label fx:id="MonthlyFridayLabel" alignment="CENTER" disable="true" layoutX="721.0" layoutY="160.0" prefWidth="140.0" text="Friday" visible="false" />
+                  <Label fx:id="MonthlySaturdayLabel" alignment="CENTER" disable="true" layoutX="861.0" layoutY="160.0" prefWidth="140.0" text="Saturday" visible="false" />
+                  <Label fx:id="MonViewMonthYearLabel" alignment="CENTER" disable="true" layoutX="361.0" layoutY="83.0" prefWidth="300.0" textAlignment="CENTER">
+                     <font>
+                        <Font name="Calibri" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+          </AnchorPane>
         </items>
       </SplitPane>
    </children>

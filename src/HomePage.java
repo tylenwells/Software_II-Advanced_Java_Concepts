@@ -22,6 +22,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
 public class HomePage implements Initializable {
 
     @FXML
@@ -50,38 +51,6 @@ public class HomePage implements Initializable {
     public Label consultantidlabel;
     @FXML
     public Button generatereportbutton;
-    @FXML
-    public TableView WeeklyTableView;
-    @FXML
-    public TableColumn WeeklySunColumn;
-    @FXML
-    public TableColumn WeeklyMonColumn;
-    @FXML
-    public TableColumn WeeklyTueColumn;
-    @FXML
-    public TableColumn WeeklyWedColumn;
-    @FXML
-    public TableColumn WeeklyThuColumn;
-    @FXML
-    public TableColumn WeeklyFriColumn;
-    @FXML
-    public TableColumn WeeklySatColumn;
-    @FXML
-    public TableView MonthlyTableView;
-    @FXML
-    public TableColumn MonSunColumn;
-    @FXML
-    public TableColumn MonthlyMonColumn;
-    @FXML
-    public TableColumn MonthlyTueColumn;
-    @FXML
-    public TableColumn MonthlyWedColumn;
-    @FXML
-    public TableColumn MonThuColumn;
-    @FXML
-    public TableColumn MonFriCol;
-    @FXML
-    public TableColumn MonSatColumn;
     @FXML
     public RadioButton weeklyviewratio;
     @FXML
@@ -116,9 +85,103 @@ public class HomePage implements Initializable {
     public ListView<String> SaturdayList;
     @FXML
     public GridPane WeeklyViewGridPane;
+    @FXML
+    public ListView<String> mon36;
+    @FXML
+    public ListView<String> mon37;
+    @FXML
+    public ListView<String> mon01;
+    @FXML
+    public ListView<String> mon02;
+    @FXML
+    public ListView<String> mon03;
+    @FXML
+    public ListView<String> mon04;
+    @FXML
+    public ListView<String> mon05;
+    @FXML
+    public ListView<String> mon06;
+    @FXML
+    public ListView<String> mon07;
+    @FXML
+    public ListView<String> mon08;
+    @FXML
+    public ListView<String> mon09;
+    @FXML
+    public ListView<String> mon10;
+    @FXML
+    public ListView<String> mon11;
+    @FXML
+    public ListView<String> mon12;
+    @FXML
+    public ListView<String> mon13;
+    @FXML
+    public ListView<String> mon14;
+    @FXML
+    public ListView<String> mon15;
+    @FXML
+    public ListView<String> mon16;
+    @FXML
+    public ListView<String> mon17;
+    @FXML
+    public ListView<String> mon18;
+    @FXML
+    public ListView<String> mon19;
+    @FXML
+    public ListView<String> mon20;
+    @FXML
+    public ListView<String> mon21;
+    @FXML
+    public ListView<String> mon22;
+    @FXML
+    public ListView<String> mon23;
+    @FXML
+    public ListView<String> mon24;
+    @FXML
+    public ListView<String> mon25;
+    @FXML
+    public ListView<String> mon26;
+    @FXML
+    public ListView<String> mon27;
+    @FXML
+    public ListView<String> mon28;
+    @FXML
+    public ListView<String> mon29;
+    @FXML
+    public ListView<String> mon30;
+    @FXML
+    public ListView<String> mon31;
+    @FXML
+    public ListView<String> mon32;
+    @FXML
+    public ListView<String> mon33;
+    @FXML
+    public ListView<String> mon34;
+    @FXML
+    public ListView<String> mon35;
+    @FXML
+    public GridPane MonthlyViewGridPane;
+    @FXML
+    public Label MonthlySundayLabel;
+    @FXML
+    public Label MonthlyMondayLabel;
+    @FXML
+    public Label MonthlyTuesdayLabel;
+    @FXML
+    public Label MonthlyThursdayLabel;
+    @FXML
+    public Label MonthlyWednesdayLabel;
+    @FXML
+    public Label MonthlyFridayLabel;
+    @FXML
+    public Label MonthlySaturdayLabel;
+    @FXML
+    public Label MonViewMonthYearLabel;
 
     //member variables
     final ToggleGroup calview = new ToggleGroup();
+
+
     String currentuser = null;
     Appointment[] weeklyApptArray = new Appointment[256];
     Appointment[] monthlyApptArray = new Appointment[256];
@@ -162,7 +225,10 @@ public class HomePage implements Initializable {
     public void weeklyviewratioselected(ActionEvent actionEvent) {
 
         WeeklyViewGridPane.setDisable(false);
+        MonthlyViewGridPane.setDisable(true);
         fillWeeklyTable();
+        MonViewMonthYearLabel.setVisible(false);
+        MonthlyViewGridPane.setVisible(false);
         WeeklyViewGridPane.setVisible(true);
         monthlyviewratio.setSelected(false);
         WeeklySundayLabel.setVisible(true);
@@ -179,9 +245,30 @@ public class HomePage implements Initializable {
         WeeklyThursdayLabel.setDisable(false);
         WeeklyFridayLabel.setDisable(false);
         WeeklySaturdayLabel.setDisable(false);
+        MonthlySundayLabel.setVisible(false);
+        MonthlyMondayLabel.setVisible(false);
+        MonthlyTuesdayLabel.setVisible(false);
+        MonthlyWednesdayLabel.setVisible(false);
+        MonthlyThursdayLabel.setVisible(false);
+        MonthlyFridayLabel.setVisible(false);
+        MonthlySaturdayLabel.setVisible(false);
+        MonthlySundayLabel.setDisable(true);
+        MonthlyMondayLabel.setDisable(true);
+        MonthlyTuesdayLabel.setDisable(true);
+        MonthlyWednesdayLabel.setDisable(true);
+        MonthlyThursdayLabel.setDisable(true);
+        MonthlyFridayLabel.setDisable(true);
+        MonthlySaturdayLabel.setDisable(true);
+
     }
 
     public void monthlyviewratioselected(ActionEvent actionEvent) {
+        WeeklyViewGridPane.setDisable(true);
+        MonthlyViewGridPane.setDisable(false);
+        fillMonthlyTable();
+        MonViewMonthYearLabel.setVisible(true);
+        WeeklyViewGridPane.setVisible(false);
+        MonthlyViewGridPane.setVisible(true);
         WeeklyViewGridPane.setDisable(true);
         WeeklyViewGridPane.setVisible(false);
         weeklyviewratio.setSelected(false);
@@ -200,7 +287,23 @@ public class HomePage implements Initializable {
         WeeklyThursdayLabel.setDisable(true);
         WeeklyFridayLabel.setDisable(true);
         WeeklySaturdayLabel.setDisable(true);
+        MonthlySundayLabel.setVisible(true);
+        MonthlyMondayLabel.setVisible(true);
+        MonthlyTuesdayLabel.setVisible(true);
+        MonthlyWednesdayLabel.setVisible(true);
+        MonthlyThursdayLabel.setVisible(true);
+        MonthlyFridayLabel.setVisible(true);
+        MonthlySaturdayLabel.setVisible(true);
+        MonthlySundayLabel.setDisable(false);
+        MonthlyMondayLabel.setDisable(false);
+        MonthlyTuesdayLabel.setDisable(false);
+        MonthlyWednesdayLabel.setDisable(false);
+        MonthlyThursdayLabel.setDisable(false);
+        MonthlyFridayLabel.setDisable(false);
+        MonthlySaturdayLabel.setDisable(false);
+
     }
+
 
     //other functions/methods
 
@@ -327,8 +430,456 @@ public void fillWeeklyTable() {
     }
 
 };
+    private void fillMonthlyTable() {
+        markmonlistsVisable();
+        ListView<String>[] lva = new ListView[37];
+        LocalDateTime fd = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth());
+        Integer daysinmonth = LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        int offset = 0;
+        switch (fd.getDayOfWeek()){ //Switch statement based upon the day of the week the first day of the month falls on
+            case SUNDAY: ;
+                switch(daysinmonth){
+                    case 28: //disable 29-37
+                        mon29.setVisible(false);
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        mon30.setVisible(false);
+                        break;
+                    case 29: //disable 30-37
+                        mon30.setVisible(false);
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 31-37
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 32-37
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //ide is mad if i don't include this
+                        break;
+                } //switch statements to hide the unused lists outside of the scope of the month
+                break;
+            case MONDAY:
+                offset = 1;
+                switch(daysinmonth){
+                    case 28: //disable 1, 30-37
+                        mon01.setVisible(false);
+                        mon30.setVisible(false);
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1, 31-37
+                        mon01.setVisible(false);
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1, 32-37
+                        mon01.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 1, 33-37
+                        mon01.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //ide is mad if I don't include this.
+                        break;
+                }
+                break;
+            case TUESDAY:
+                offset = 2;
+                switch(daysinmonth){
+                    case 28: //disable 1,2,31-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon31.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1,2,32-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1,2,33-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31://disable 1,2,34-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //IDE gets mad if I don't include this
+                        break;
+                }
+                break;
+            case WEDNESDAY:
+                offset = 3;
+                switch(daysinmonth){
+                    case 28: //disable 1-3, 32-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon32.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1-3, 33-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1-3, 34-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 1-3, 35-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //IDE is mad if I don't include this.
+                        break;
+                }
+                break;
+            case THURSDAY:
+                offset = 4;
+                switch(daysinmonth){
+                    case 28:// disable 1-4, 33-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon33.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1-4, 34-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1-4, 35-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 1-4, 36-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //IDE is mad if I don't include this.
+                        break;
+                }
+                break;
+            case FRIDAY:
+                offset = 5;
+                switch(daysinmonth){
+                    case 28: //disable 1-5, 34-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon34.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1-5, 35-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1-5, 36-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 1-5, 37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    default: //IDE is mad if I don't include this.
+                        break;
+                }
+                break;
+            case SATURDAY:
+                offset = 6;
+                switch(daysinmonth){
+                    case 28: //disable 1-6, 35-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon06.setVisible(false);
+                        mon35.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 29: //disable 1-6, 36-37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon06.setVisible(false);
+                        mon36.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 30: //disable 1-6, 37
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon06.setVisible(false);
+                        mon37.setVisible(false);
+                        break;
+                    case 31: //disable 1-6
+                        mon01.setVisible(false);
+                        mon02.setVisible(false);
+                        mon03.setVisible(false);
+                        mon04.setVisible(false);
+                        mon05.setVisible(false);
+                        mon06.setVisible(false);
+                        break;
+                    default: //IDE is mad if I don't include this.
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
 
+        for(int i = LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth(); i > 0; i--){
+            int offseti = i + offset;
+            if (Integer.toString(offseti).length() == 1) {
+                String buff = "0".concat(Integer.toString(offseti));;
+                lva[i] =(ListView<String>) MonthlyViewGridPane.lookup("#mon" + buff);
+            }else lva[i] = (ListView<String>) MonthlyViewGridPane.lookup("#mon" + Integer.toString(offseti));
+        }
 
+        initmonLists(lva);
+
+        MonViewMonthYearLabel.textProperty().set(LocalDateTime.now().getMonth().name()  + " " + Integer.toString(LocalDateTime.now().getYear())); //set month and year label text value
+
+        String query = "SELECT appointmentId, customerId, appointment.userId, title, description, location, contact, type, url, start, end, appointment.createDate, appointment.createdBy, appointment.lastUpdate, appointment.lastUpdateBy from appointment INNER JOIN user u WHERE TIMESTAMPDIFF(day, now(), start) <= 31 AND TIMESTAMPDIFF(day, now(), start) >= -31  and u.userName = '" + currentuser + "'  ORDER BY start;";
+        ResultSet r = getqueryResult(Main.getDBHelper().runQuery.apply(query));
+
+        try{
+            int index = 0;
+            while(r.next()){
+                String test = r.getObject(10).toString();
+                monthlyApptArray[index] = new Appointment();
+                monthlyApptArray[index].setId(r.getObject(1).toString());
+                monthlyApptArray[index].setCustomerId(r.getObject(2).toString());
+                monthlyApptArray[index].setUserId(r.getObject(3).toString());
+                monthlyApptArray[index].setTitle(r.getObject(4).toString());
+                monthlyApptArray[index].setDescription(r.getObject(5).toString());
+                monthlyApptArray[index].setLocation(r.getObject(6).toString());
+                monthlyApptArray[index].setContact(r.getObject(7).toString());
+                monthlyApptArray[index].setType(r.getObject(8).toString());
+                monthlyApptArray[index].setUrl(r.getObject(9).toString());
+                monthlyApptArray[index].setCreatedBy(r.getObject(13).toString());
+                monthlyApptArray[index].setLastUpdateBy(r.getObject(15).toString());
+                monthlyApptArray[index].setStart(convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString().substring(0,19)));
+                monthlyApptArray[index].setEnd(convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString().substring(0,19)));
+                monthlyApptArray[index].setCreateDate(convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString().substring(0,19)));
+                monthlyApptArray[index].setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString().substring(0,19)));
+                index++;
+            }
+        }
+        catch(SQLException s) {
+            s.printStackTrace();
+        }
+
+        for (Appointment a: monthlyApptArray) {
+            if (a == null){
+                break;
+            }
+            if (LocalDateTime.now().getMonth() == a.getStart().getMonth()  && LocalDateTime.now().getYear() == a.getStart().getYear()){
+                lva[a.getStart().getDayOfMonth()].getItems().add(a.getStart().format(DateTimeFormatter.ofPattern("HH:mm:")) + " " + a.getTitle());
+            }
+        }
+    }
+
+    private void markmonlistsVisable() {
+        mon01.setVisible(true);
+        mon02.setVisible(true);
+        mon03.setVisible(true);
+        mon04.setVisible(true);
+        mon05.setVisible(true);
+        mon06.setVisible(true);
+        mon07.setVisible(true);
+        mon08.setVisible(true);
+        mon09.setVisible(true);
+        mon10.setVisible(true);
+        mon11.setVisible(true);
+        mon12.setVisible(true);
+        mon13.setVisible(true);
+        mon14.setVisible(true);
+        mon15.setVisible(true);
+        mon16.setVisible(true);
+        mon17.setVisible(true);
+        mon18.setVisible(true);
+        mon19.setVisible(true);
+        mon20.setVisible(true);
+        mon21.setVisible(true);
+        mon22.setVisible(true);
+        mon23.setVisible(true);
+        mon24.setVisible(true);
+        mon25.setVisible(true);
+        mon26.setVisible(true);
+        mon27.setVisible(true);
+        mon28.setVisible(true);
+        mon29.setVisible(true);
+        mon30.setVisible(true);
+        mon31.setVisible(true);
+        mon32.setVisible(true);
+        mon33.setVisible(true);
+        mon34.setVisible(true);
+        mon35.setVisible(true);
+        mon36.setVisible(true);
+        mon37.setVisible(true);
+    }
+
+    private void initmonLists(ListView<String>[] lva){ //clears and set date on lists
+        for(ListView<String> list : lva){
+            try {
+                list.getItems().clear();
+            }
+            catch (NullPointerException ignored){}
+
+        }
+        for (int i = lva.length; i>0; i--){
+            try{
+                lva[i].getItems().add(Integer.toString(i));
+                lva[i].cellFactoryProperty().set(list -> {
+                    ListCell<String> cell = new ListCell<String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setGraphic(null);
+                                setStyle(null);
+                            } else {
+                                if (item.equalsIgnoreCase(list.getItems().get(0))) {
+                                    setStyle("alignment: LEFT;");
+                                }
+                                setText(item);
+                            }
+                        }
+                    };
+                    return cell;
+                });
+                }
+            catch (IndexOutOfBoundsException | NullPointerException ignored){}
+        }
+    }
 
 
 
