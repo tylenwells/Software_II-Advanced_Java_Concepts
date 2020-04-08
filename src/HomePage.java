@@ -1,3 +1,6 @@
+import com.mysql.cj.Query;
+import com.mysql.cj.xdevapi.SqlStatement;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,9 +15,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -26,9 +31,11 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
@@ -191,17 +198,25 @@ public class HomePage implements Initializable {
 
     //member variables
     final ToggleGroup calview = new ToggleGroup();
+    final ToggleGroup reportselection = new ToggleGroup();
 
 
     String currentuser = null;
     Appointment[] weeklyApptArray = new Appointment[256];
     Appointment[] monthlyApptArray = new Appointment[256];
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    SimpleStringProperty consultantid = new SimpleStringProperty();
+    SimpleStringProperty customerid = new SimpleStringProperty();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         weeklyviewratio.setToggleGroup(calview);
         monthlyviewratio.setToggleGroup(calview);
+        monthlyapptbytyperatio.setToggleGroup(reportselection);
+        schedulespecificconsultantratio.setToggleGroup(reportselection);
+        apptsspecificcustomerratio.setToggleGroup(reportselection);
+        consultantIDfield.textProperty().bindBidirectional(consultantid);
+        customerIDfield.textProperty().bindBidirectional(customerid);
     }
 
 //interface action methods
@@ -223,12 +238,16 @@ public class HomePage implements Initializable {
     }
 
     public void customerbuttonpressed(ActionEvent actionEvent) {
+        //load findpage and set customer flags
     }
 
     public void apptbuttonpressed(ActionEvent actionEvent) {
+        //load find page and set appt flags
     }
 
     public void consultantbuttonpressed(ActionEvent actionEvent) {
+        //load lookup page
+
     }
 
     public void adminbuttonpressed(ActionEvent actionEvent) {
@@ -243,16 +262,209 @@ public class HomePage implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void monthlyapptbytyperatioselected(ActionEvent actionEvent) {
+        consultantidlabel.setVisible(false);
+        customeridlabel.setVisible(false);
+        consultantIDfield.setVisible(false);
+        customerIDfield.setVisible(false);
     }
 
     public void schedulespecificconsultantratioselected(ActionEvent actionEvent) {
+        consultantidlabel.setVisible(true);
+        consultantidlabel.setDisable(false);
+        customeridlabel.setVisible(false);
+        consultantIDfield.setVisible(true);
+        consultantIDfield.setDisable(false);
+        customerIDfield.setVisible(false);
     }
 
     public void apptsspecificcustomerratioselected(ActionEvent actionEvent) {
+        consultantidlabel.setVisible(false);
+        customeridlabel.setVisible(true);
+        customerIDfield.setDisable(false);
+        consultantIDfield.setVisible(false);
+        customerIDfield.setVisible(true);
+        customeridlabel.setDisable(false);
     }
 
     public void generatereportbuttonpressed(ActionEvent actionEvent) {
+        if (monthlyapptbytyperatio.isSelected()){
+            //compile and save report of all appts for the month separated by type
+
+           Integer numtypes;
+           String numtypesquery = "SELECT DISTINCT type FROM appointment WHERE TIMESTAMPDIFF(day, now(), start) <= 31 AND TIMESTAMPDIFF(day, now(), start) >= -31";
+           ArrayList<String> results = new ArrayList<String>();
+           ResultSet r = getqueryResult(Main.getDBHelper().runQuery.apply(numtypesquery));
+        try{
+          while (r.next()){
+                  results.add(r.getObject(1).toString());
+          }
+        }
+        catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        String[] preparray = new String[results.size()];
+        for (String s : results) {
+            int index = results.indexOf(s);
+            String apptquery = "SELECT * FROM appointment WHERE TIMESTAMPDIFF(day, now(), start) <= 31 AND TIMESTAMPDIFF(day, now(), start) >= -31 AND type = '" + s + "';";
+            ResultSet r2 = getqueryResult(Main.getDBHelper().runQuery.apply(apptquery));
+            s = s.concat(System.lineSeparator() + "__________________________________" + System.lineSeparator());
+            int hitcount = 1;
+            try {
+                while (r2.next()) {
+                    LocalDateTime dt;
+                    String hci = Integer.toString(hitcount);
+                    dt = convertSQLUTCStrtoLocalTime.apply(r2.getObject(10).toString());
+                    s = s.concat(hci + ".\t" + r2.getObject(4) + "\t" + dt.format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + dt.format(DateTimeFormatter.ISO_LOCAL_TIME) + System.lineSeparator());
+                    hitcount++;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            s = s.concat(System.lineSeparator() + System.lineSeparator() + System.lineSeparator());
+            results.set(index, s);
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Report");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fileChooser.showSaveDialog(null);
+
+        if (selectedFile != null) {
+            try {
+                Files.write(Paths.get(selectedFile.getCanonicalPath()), ("Report of monthly appointments, separated by appointment type:" + System.lineSeparator() + System.lineSeparator()).getBytes());
+                for (String s : results) {
+                    Files.write(Paths.get(selectedFile.getCanonicalPath()), (s.getBytes()), StandardOpenOption.APPEND);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+        else if (schedulespecificconsultantratio.isSelected()) {
+            if (consultantid.get().isEmpty() || consultantid.get() == null) {
+                Alert alertlt15appt = new Alert(Alert.AlertType.ERROR);
+                alertlt15appt.setHeaderText("Empty ID field");
+                alertlt15appt.setTitle("Error: Empty ID Field");
+                alertlt15appt.setContentText("You must enter an ID to generate and save this report. \n\nPlease enter an ID into the ID field and retry!");
+                alertlt15appt.showAndWait();
+                return;
+            } else {
+                String id = consultantid.get();
+                String query = "SELECT * FROM appointment INNER JOIN user u WHERE TIMESTAMPDIFF(DAY, NOW(), start) >= 0 and u.userId = '" + id + "' ORDER BY start;";
+                ResultSet r = getqueryResult(Main.getDBHelper().runQuery.apply(query));
+                ArrayList<String> resultarraylist = new ArrayList<String>();
+                boolean check = false;
+                String towrite = "";
+                try {
+                    int hitcount = 1;
+                    while (r.next()) {
+                        check = true;
+                        String hitcountstring = Integer.toString(hitcount);
+                        resultarraylist.add(hitcountstring + ".\t" + r.getObject(4).toString() + "\t" + r.getObject(10) + System.lineSeparator());
+                        hitcount++;
+                    }
+                    if (!check) {
+                        Alert alertlt15appt = new Alert(Alert.AlertType.ERROR);
+                        alertlt15appt.setHeaderText("No appointments found.");
+                        alertlt15appt.setTitle("Error: Nothing to Report");
+                        alertlt15appt.setContentText("No appointments were found for the user ID " + id + ". \n\nReport will not be generated, please check Consultant ID!");
+                        alertlt15appt.showAndWait();
+                        return;
+                    } else {
+                        for (int i = 0; i < resultarraylist.size(); i++) {
+                            towrite = towrite.concat(resultarraylist.get(i));
+                        }
+                    }
+                    towrite = "Listed schedule for user ID " + id + ", arranged chronologically" + System.lineSeparator() + "Please note this report only includes appointments which start in the present day or in the future." + System.lineSeparator() + "_________________________________________________" + System.lineSeparator() + towrite;
+
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Save Report");
+                    fileChooser.getExtensionFilters().addAll(
+                            new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                            new FileChooser.ExtensionFilter("All Files", "*.*"));
+                    File selectedFile = fileChooser.showSaveDialog(null);
+
+                    if (selectedFile != null) {
+                        try {
+                            Files.write(Paths.get(selectedFile.getCanonicalPath()), towrite.getBytes());
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                catch(SQLException e){
+                        e.printStackTrace();
+                    }
+            }
+
+
+        }
+
+        else if (apptsspecificcustomerratio.isSelected()) {
+            if (customerid.get().isEmpty() || customerid.get() == null) {
+                Alert alertlt15appt = new Alert(Alert.AlertType.ERROR);
+                alertlt15appt.setHeaderText("Empty ID field");
+                alertlt15appt.setTitle("Error: Empty ID Field");
+                alertlt15appt.setContentText("You must enter an ID to generate and save this report. \n\nPlease enter an ID into the ID field and retry!");
+                alertlt15appt.showAndWait();
+                return;
+            } else {
+                String id = customerid.get();
+                String query = "SELECT * FROM appointment INNER JOIN customer c WHERE TIMESTAMPDIFF(DAY, NOW(), start) >= 0 and c.customerId = '" + id + "' ORDER BY start;";
+                ResultSet r = getqueryResult(Main.getDBHelper().runQuery.apply(query));
+                ArrayList<String> resultarraylist = new ArrayList<String>();
+                boolean check = false;
+                String towrite = "";
+                try {
+                    int hitcount = 1;
+                    while (r.next()) {
+                        check = true;
+                        String hitcountstring = Integer.toString(hitcount);
+                        resultarraylist.add(hitcountstring + ".\t" + r.getObject(4).toString() + "\t" + r.getObject(10) + System.lineSeparator());
+                        hitcount++;
+                    }
+                    if (!check) {
+                        Alert alertlt15appt = new Alert(Alert.AlertType.ERROR);
+                        alertlt15appt.setHeaderText("No appointments found.");
+                        alertlt15appt.setTitle("Error: Nothing to Report");
+                        alertlt15appt.setContentText("No appointments were found for the customer ID " + id + ". \n\nReport will not be generated, please check Customer ID!");
+                        alertlt15appt.showAndWait();
+                        return;
+                    } else {
+                        for (int i = 0; i < resultarraylist.size(); i++) {
+                            towrite = towrite.concat(resultarraylist.get(i));
+                        }
+                    }
+                    towrite = "Listed schedule for customer ID \"" + id + "\" , arranged chronologically" + System.lineSeparator() + "Please note this report only includes appointments which start in the present day or in the future." + System.lineSeparator() + "_________________________________________________" + System.lineSeparator() + towrite;
+
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Save Report");
+                    fileChooser.getExtensionFilters().addAll(
+                            new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                            new FileChooser.ExtensionFilter("All Files", "*.*"));
+                    File selectedFile = fileChooser.showSaveDialog(null);
+
+                    if (selectedFile != null) {
+                        try {
+                            Files.write(Paths.get(selectedFile.getCanonicalPath()), towrite.getBytes());
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void weeklyviewratioselected(ActionEvent actionEvent) {
@@ -361,7 +573,7 @@ public class HomePage implements Initializable {
         }
     }
 
-public void fillWeeklyTable() {
+    public void fillWeeklyTable() {
 
         SundayList.getItems().clear();
         MondayList.getItems().clear();
@@ -463,7 +675,8 @@ public void fillWeeklyTable() {
     }
 
 };
-    private void fillMonthlyTable() {
+
+    public void fillMonthlyTable() {
         markmonlistsVisable();
         ListView<String>[] lva = new ListView[37];
         LocalDateTime fd = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth());
@@ -819,10 +1032,10 @@ public void fillWeeklyTable() {
                 monthlyApptArray[index].setUrl(r.getObject(9).toString());
                 monthlyApptArray[index].setCreatedBy(r.getObject(13).toString());
                 monthlyApptArray[index].setLastUpdateBy(r.getObject(15).toString());
-                monthlyApptArray[index].setStart(convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString().substring(0,19)));
-                monthlyApptArray[index].setEnd(convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString().substring(0,19)));
-                monthlyApptArray[index].setCreateDate(convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString().substring(0,19)));
-                monthlyApptArray[index].setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString().substring(0,19)));
+                monthlyApptArray[index].setStart(convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString()));
+                monthlyApptArray[index].setEnd(convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString()));
+                monthlyApptArray[index].setCreateDate(convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString()));
+                monthlyApptArray[index].setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString()));
                 index++;
             }
         }
@@ -840,7 +1053,7 @@ public void fillWeeklyTable() {
         }
     }
 
-    private void markmonlistsVisable() {
+    public void markmonlistsVisable() {
         mon01.setVisible(true);
         mon02.setVisible(true);
         mon03.setVisible(true);
@@ -880,7 +1093,7 @@ public void fillWeeklyTable() {
         mon37.setVisible(true);
     }
 
-    private void initmonLists(ListView<String>[] lva){ //clears and set date on lists
+    public void initmonLists(ListView<String>[] lva){ //clears and set date on lists
         for(ListView<String> list : lva){
             try {
                 list.getItems().clear();
@@ -926,6 +1139,7 @@ public void fillWeeklyTable() {
 
 
     Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+        s1 = s1.substring(0,19);
         LocalDateTime ldt = LocalDateTime.parse(s1, dateTimeFormatter);
         LocalDateTime buffldt = ldt;
         ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));

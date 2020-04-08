@@ -9,6 +9,23 @@ public class Appointment {
 
     }
 
+    public Appointment(String title, String description, String location, String contact, String type, String url, String createdBy, String lastUpdateBy, String id, String customerId, String userId, LocalDateTime start, LocalDateTime end, LocalDateTime createDate, LocalDateTime lastUpdate) {
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.contact = contact;
+        this.type = type;
+        this.url = url;
+        this.createdBy = createdBy;
+        this.lastUpdateBy = lastUpdateBy;
+        this.id = id;
+        this.customerId = customerId;
+        this.userId = userId;
+        this.start = start;
+        this.end = end;
+        this.createDate = createDate;
+        this.lastUpdate = lastUpdate;
+    }
 
     public String getId() {
         return id;
