@@ -1,4 +1,12 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.function.Function;
 
 public class User {
     private Integer userId;
@@ -9,6 +17,7 @@ public class User {
     private String createdBy;
     private LocalDateTime lastUpdate;
     private String lastUpdateBy;
+    private String activeString;
 
     public User(Integer userId, String userName, String password, Integer active, LocalDateTime createDate, String createdBy, LocalDateTime lastUpdate, String lastUpdateBy) {
         this.userId = userId;
@@ -19,6 +28,36 @@ public class User {
         this.createdBy = createdBy;
         this.lastUpdate = lastUpdate;
         this.lastUpdateBy = lastUpdateBy;
+        if(active == 1) {
+            this.activeString = "True";
+        }
+        else if (active == 0){
+            this.activeString = "False";
+        }
+    }
+
+    public User(ResultSet r){
+        try{
+            while(r.next()){
+                this.userId = r.getInt(1);
+                this.userName = r.getObject(2).toString();
+                this.password = "haha nice try";
+                this.active = r.getInt(4);
+                this.createDate = convertSQLUTCStrtoLocalTime.apply(r.getObject(5).toString());
+                this.createdBy = r.getObject(6).toString();
+                this.lastUpdate = convertSQLUTCStrtoLocalTime.apply(r.getObject(7).toString());
+                this.lastUpdateBy = r.getObject(8).toString();
+                if(active == 1) {
+                    this.activeString = "True";
+                }
+                else if (active == 0){
+                    this.activeString = "False";
+                }
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public Integer getUserId() {
@@ -83,5 +122,30 @@ public class User {
 
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
+    }
+
+    Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+        s1 = s1.substring(0,19);
+        LocalDateTime ldt = LocalDateTime.parse(s1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime buffldt = ldt;
+        ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));
+        ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
+        ZoneOffset lzo = buffzdt.getOffset();
+        LocalDateTime localTime = zdt.plus(lzo.getTotalSeconds(), ChronoUnit.SECONDS).toLocalDateTime();
+        return localTime;
+    };
+
+
+    public String getActiveString() {
+        return activeString;
+    }
+
+    public void setActiveString() {
+        if(active == 1) {
+        this.activeString = "True";
+    }
+    else if (active == 0){
+        this.activeString = "False";
+    }
     }
 }

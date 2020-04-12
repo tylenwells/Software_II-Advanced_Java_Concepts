@@ -238,16 +238,48 @@ public class HomePage implements Initializable {
     }
 
     public void customerbuttonpressed(ActionEvent actionEvent) {
-        //load findpage and set customer flags
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Lookup.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+            Lookup lookup = loader.getController();
+            lookup.loadPane(1);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void apptbuttonpressed(ActionEvent actionEvent) {
-        //load find page and set appt flags
+        try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Lookup.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.show();
+        Lookup lookup = loader.getController();
+        lookup.loadPane(2);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void consultantbuttonpressed(ActionEvent actionEvent) {
-        //load lookup page
-
+        try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Lookup.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.show();
+        Lookup lookup = loader.getController();
+        lookup.loadPane(3);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void adminbuttonpressed(ActionEvent actionEvent) {

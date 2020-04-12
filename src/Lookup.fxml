@@ -4,9 +4,36 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lookup">
+<AnchorPane fx:id="anchorPane" prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lookup">
    <children>
-      <Pane fx:id="CustomerLookupPane" prefHeight="576.0" prefWidth="1024.0">
+      <Pane fx:id="ConsultantLookupPane" prefHeight="576.0" prefWidth="1024.0" visible="false">
+         <children>
+            <TableView fx:id="consultantsearchtableview" layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
+               <columns>
+                  <TableColumn fx:id="consultantidcolumn" prefWidth="75.0" resizable="false" text="ID#" />
+                  <TableColumn fx:id="consultantnamecolumn" prefWidth="381.0" resizable="false" text="Consultant Name" />
+                  <TableColumn fx:id="consultantisactivecolumn" prefWidth="60.0" resizable="false" text="Is Active" />
+                  <TableColumn fx:id="consultantlastupdatedcolumn" prefWidth="150.0" resizable="false" text="Last Updated Date" />
+               </columns>
+            </TableView>
+            <Label layoutX="79.0" layoutY="36.0" text="Consultant Lookup">
+               <font>
+                  <Font name="Calibri" size="20.0" />
+               </font>
+            </Label>
+            <RadioButton fx:id="consultantidratio" layoutX="94.0" layoutY="115.0" mnemonicParsing="false" onAction="#consultantidratiopressed" text="Consultant ID" />
+            <RadioButton fx:id="consultantnameratio" layoutX="94.0" layoutY="139.0" mnemonicParsing="false" onAction="#consultantnameratiopressed" text="Consultant Name" />
+            <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
+            <Button fx:id="consultantsearchbutton" layoutX="112.0" layoutY="263.0" mnemonicParsing="false" onAction="#consultantsearchbuttonpressed" text="Search" />
+            <TextField fx:id="consultantsearchinputfield" layoutX="107.0" layoutY="188.0" />
+            <Label layoutX="46.0" layoutY="192.0" text="Name/ID:" />
+            <RadioButton fx:id="consultantcontainsratio" layoutX="120.0" layoutY="220.0" mnemonicParsing="false" onAction="#consultantcontainsratiopressed" text="Contains" />
+            <RadioButton fx:id="consultantexactratio" layoutX="200.0" layoutY="220.0" mnemonicParsing="false" onAction="#consultantexactratiopressed" text="Exact" />
+            <Button fx:id="consultantcancelbutton" layoutX="958.0" layoutY="537.0" mnemonicParsing="false" onAction="#consultantcancelbuttonpressed" text="Cancel" />
+            <Button fx:id="consultantcopyIDbutton" layoutX="307.0" layoutY="478.0" mnemonicParsing="false" onAction="#consultantcopyidbuttonpressed" text="Copy Selected Consultant ID" />
+         </children>
+      </Pane>
+      <Pane fx:id="CustomerLookupPane" prefHeight="585.0" prefWidth="1024.0" visible="false">
          <children>
             <TableView fx:id="customerviewtable" layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
               <columns>
@@ -35,7 +62,7 @@
             <Button fx:id="customercancelbutton" layoutX="958.0" layoutY="537.0" mnemonicParsing="false" onAction="#customercancelbuttonpressed" text="Cancel" />
          </children>
       </Pane>
-      <Pane fx:id="AppointmentLookupPane" prefHeight="576.0" prefWidth="1024.0" visible="false">
+      <Pane fx:id="AppointmentLookupPane" prefHeight="576.0" prefWidth="1024.0">
          <children>
             <TableView fx:id="apptsearchtable" layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
                <columns>
@@ -49,8 +76,8 @@
             <Label layoutX="67.0" layoutY="38.0" text="Appointment Lookup">
                <font>
                   <Font name="Calibri" size="20.0" />
-               </font>
-            </Label>
+                 </font>
+             </Label>
             <RadioButton fx:id="apptapptidratio" layoutX="94.0" layoutY="115.0" mnemonicParsing="false" onAction="#apptapptidratiopressed" text="Appointment ID" />
             <RadioButton fx:id="apptcustomernameratio" layoutX="94.0" layoutY="139.0" mnemonicParsing="false" onAction="#apptcustomernameratiopressed" text="Customer Name" />
             <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
@@ -65,33 +92,6 @@
             <Button fx:id="apptcancelbutton" layoutX="958.0" layoutY="537.0" mnemonicParsing="false" onAction="#apptcancelbuttonpressed" text="Cancel" />
             <RadioButton fx:id="apptconsultantnameratio" layoutX="94.0" layoutY="163.0" mnemonicParsing="false" onAction="#apptconsultantnameratiopressed" text="Consultant Name" />
             <RadioButton fx:id="apptappttitleratio" layoutX="94.0" layoutY="187.0" mnemonicParsing="false" onAction="#apptappttitleratiopressed" text="Appointment Title" />
-         </children>
-      </Pane>
-      <Pane fx:id="ConsultantLookupPane" prefHeight="576.0" prefWidth="1024.0" visible="false">
-         <children>
-            <TableView fx:id="consultantsearchtableview" layoutX="307.0" layoutY="38.0" prefHeight="431.0" prefWidth="666.0">
-               <columns>
-                  <TableColumn fx:id="consultantidcolumn" prefWidth="75.0" resizable="false" text="ID#" />
-                  <TableColumn fx:id="consultantnamecolumn" prefWidth="381.0" resizable="false" text="Consultant Name" />
-                  <TableColumn fx:id="consultantisactivecolumn" prefWidth="60.0" resizable="false" text="Is Active" />
-                  <TableColumn fx:id="consultantlastupdatedcolumn" prefWidth="150.0" resizable="false" text="Last Updated Date" />
-               </columns>
-            </TableView>
-            <Label layoutX="79.0" layoutY="36.0" text="Consultant Lookup">
-               <font>
-                  <Font name="Calibri" size="20.0" />
-               </font>
-            </Label>
-            <RadioButton fx:id="consultantidratio" layoutX="94.0" layoutY="115.0" mnemonicParsing="false" onAction="#consultantidratiopressed" text="Consultant ID" />
-            <RadioButton fx:id="consultantnameratio" layoutX="94.0" layoutY="139.0" mnemonicParsing="false" onAction="#consultantnameratiopressed" text="Consultant Name" />
-            <Label layoutX="108.0" layoutY="90.0" text="Search via: " />
-            <Button layoutX="112.0" layoutY="263.0" mnemonicParsing="false" text="Search" />
-            <TextField fx:id="consultantsearchinputfield" layoutX="107.0" layoutY="188.0" />
-            <Label layoutX="46.0" layoutY="192.0" text="Name/ID:" />
-            <RadioButton fx:id="consultantcontainsratio" layoutX="120.0" layoutY="220.0" mnemonicParsing="false" onAction="#consultantcontainsratiopressed" text="Contains" />
-            <RadioButton fx:id="consultantexactratio" layoutX="200.0" layoutY="220.0" mnemonicParsing="false" onAction="#consultantexactratiopressed" text="Exact" />
-            <Button fx:id="consultantcancelbutton" layoutX="958.0" layoutY="537.0" mnemonicParsing="false" onAction="#consultantcancelbuttonpressed" text="Cancel" />
-            <Button fx:id="consultantcopyIDbutton" layoutX="307.0" layoutY="478.0" mnemonicParsing="false" onAction="#consultantcopyidbuttonpressed" text="Copy Selected Consultant ID" />
          </children>
       </Pane>
    </children>
