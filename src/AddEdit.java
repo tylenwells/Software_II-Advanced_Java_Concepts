@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.util.ResourceBundle;
@@ -86,25 +88,27 @@ public class AddEdit implements Initializable {
 
     String customerid = "";
     String customerAddressId = "";
-    SimpleStringProperty customername = new SimpleStringProperty();
-    SimpleStringProperty customeraddress1 = new SimpleStringProperty();
-    SimpleStringProperty customeraddress2 = new SimpleStringProperty();
-    SimpleStringProperty customercity = new SimpleStringProperty();
-    SimpleStringProperty customercountry = new SimpleStringProperty();
-    SimpleStringProperty customerpostalcode = new SimpleStringProperty();
-    SimpleStringProperty customerphonenumber = new SimpleStringProperty();
+    SimpleStringProperty customername = new SimpleStringProperty("");
+    SimpleStringProperty customeraddress1 = new SimpleStringProperty("");
+    SimpleStringProperty customeraddress2 = new SimpleStringProperty("");
+    SimpleStringProperty customercity = new SimpleStringProperty("");
+    SimpleStringProperty customercountry = new SimpleStringProperty("");
+    SimpleStringProperty customerpostalcode = new SimpleStringProperty("");
+    SimpleStringProperty customerphonenumber = new SimpleStringProperty("");
 
     String apptid = "";
-    SimpleStringProperty appttitle = new SimpleStringProperty();
-    SimpleStringProperty apptcustomername = new SimpleStringProperty();
-    SimpleStringProperty apptconsultantname = new SimpleStringProperty();
-    SimpleStringProperty apptdescription = new SimpleStringProperty();
-    SimpleStringProperty appttype = new SimpleStringProperty();
-    SimpleStringProperty apptlocation = new SimpleStringProperty();
-    SimpleStringProperty apptcontact = new SimpleStringProperty();
-    SimpleStringProperty appturl = new SimpleStringProperty();
-    SimpleStringProperty apptstarttime = new SimpleStringProperty();
-    SimpleStringProperty apptendtime = new SimpleStringProperty();
+    String apptcustomerid = "";
+    String apptconsultantid =  "";
+    SimpleStringProperty appttitle = new SimpleStringProperty("");
+    SimpleStringProperty apptcustomername = new SimpleStringProperty("");
+    SimpleStringProperty apptconsultantname = new SimpleStringProperty("");
+    SimpleStringProperty apptdescription = new SimpleStringProperty("");
+    SimpleStringProperty appttype = new SimpleStringProperty("");
+    SimpleStringProperty apptlocation = new SimpleStringProperty("");
+    SimpleStringProperty apptcontact = new SimpleStringProperty("");
+    SimpleStringProperty appturl = new SimpleStringProperty("");
+    SimpleStringProperty apptstarttime = new SimpleStringProperty("");
+    SimpleStringProperty apptendtime = new SimpleStringProperty("");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -146,58 +150,82 @@ public class AddEdit implements Initializable {
         String cityId = "";
         String countryId = "";
 
-       try {
-           ResultSet r = Main.getDBHelper().runQuery.apply("SELECT addressId from address INNER JOIN city ci, country co where address = '" + customeraddress1.get() + "' AND address2  = '" + customeraddress2.get() + "' AND postalCode = '" + customerpostalcode.get() + "'  AND phone = '" + customerphonenumber.get() + "' and ci.city = '" + customercity.get() + "' and co.country = '" + customercountry.get() + "';");
-           while (r.next()) {
-               addressid = r.getObject(1).toString();
-           }
-           if (addressid.isEmpty()) {
-               ResultSet r2 = Main.getDBHelper().runQuery.apply("SELECT * FROM city INNER JOIN country c WHERE city = '" + customercity.get() + "' AND c.country = '" + customercountry.get() + "';");
-               while (r2.next()) {
-                   cityId = r2.getObject(1).toString();
-               }
-               if (cityId.isEmpty()) {
-                   ResultSet r3 = Main.getDBHelper().runQuery.apply("SELECT * from country WHERE country = '" + customercountry.get() + "';");
-                   while (r3.next()) {
-                       countryId = r3.getObject(1).toString();
-                   }
-                   if (countryId.isEmpty()) {
-                       Main.getDBHelper().runDMS.apply("INSERT INTO country (country, createDate, createdBy, lastUpdateBy) values ('" + customercountry.get() + "', NOW(), '" + this.username + "', '" + this.username + "');");
-                       ResultSet r4 = Main.getDBHelper().runQuery.apply("SELECT countryId from country where country = '" + customercountry.get() + "';");
-                       while (r4.next()) {
-                           countryId = r4.getObject(1).toString();
-                       }
-                   }
+        if (checkempty(1)){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error: Required Information not given");
+            alert.setTitle("Required Field Empty");
+            alert.setContentText("One or more required fields have been left empty or contain an invalid value. Please check your input and try again!");
+            alert.showAndWait();
+        }
+        else {
 
-                   Main.getDBHelper().runDMS.apply("INSERT INTO city (city, countryId, createDate, createdBy, lastUpdateBy) VALUES ('" + customercity.get() + "', '" + countryId + "', now(), '" + username + "', '" + username + "');");
-                   ResultSet r5 = Main.getDBHelper().runQuery.apply("SELECT cityId from city WHERE city = '" + customercity.get() + "' AND countryId = '" + countryId + "'");
-                   while (r5.next()) {
-                       cityId = r5.getObject(1).toString();
-                   }
-               }
+            try {
+                ResultSet r = Main.getDBHelper().runQuery.apply("SELECT addressId from address INNER JOIN city ci, country co where address = '" + customeraddress1.get() + "' AND address2  = '" + customeraddress2.get() + "' AND postalCode = '" + customerpostalcode.get() + "'  AND phone = '" + customerphonenumber.get() + "' and ci.city = '" + customercity.get() + "' and co.country = '" + customercountry.get() + "';");
+                while (r.next()) {
+                    addressid = r.getObject(1).toString();
+                }
+                if (addressid.isEmpty()) {
+                    ResultSet r2 = Main.getDBHelper().runQuery.apply("SELECT * FROM city INNER JOIN country c WHERE city = '" + customercity.get() + "' AND c.country = '" + customercountry.get() + "';");
+                    while (r2.next()) {
+                        cityId = r2.getObject(1).toString();
+                    }
+                    if (cityId.isEmpty()) {
+                        ResultSet r3 = Main.getDBHelper().runQuery.apply("SELECT * from country WHERE country = '" + customercountry.get() + "';");
+                        while (r3.next()) {
+                            countryId = r3.getObject(1).toString();
+                        }
+                        if (countryId.isEmpty()) {
+                            Main.getDBHelper().runDMS.apply("INSERT INTO country (country, createDate, createdBy, lastUpdateBy) values ('" + customercountry.get() + "', NOW(), '" + this.username + "', '" + this.username + "');");
+                            ResultSet r4 = Main.getDBHelper().runQuery.apply("SELECT countryId from country where country = '" + customercountry.get() + "';");
+                            while (r4.next()) {
+                                countryId = r4.getObject(1).toString();
+                            }
+                        }
 
-               Main.getDBHelper().runDMS.apply("INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('" + customeraddress1.get() + "', '" + customeraddress2.get() + "', '" + cityId + "', '" + customerpostalcode.get() + "', '" + customerphonenumber.get() + "', now(), '" + username + "', '" + username + "');");
-               ResultSet r6 = Main.getDBHelper().runQuery.apply("SELECT addressId from address where address = '" + customeraddress1.get() + "' AND address2  = '" + customeraddress2.get() + "' AND postalCode = '" + customerpostalcode.get() + "'  AND phone = '" + customerphonenumber.get() + "' AND cityId = '" + cityId + "';");
-               while (r6.next()) {
-                   addressid = r6.getObject(1).toString();
-               }
-           }
-           if (create) {
-               Main.getDBHelper().runDMS.apply("INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES ('" + customername.get() + "', '" + addressid + "', '1', now(), '" + username + "', '" + username + "');");
-           } else {
-               Main.getDBHelper().runDMS.apply("UPDATE customer SET customerName = '" + customername.get() + "', addressId = '" + addressid + "', lastUpdateBy = '" + username + "' WHERE customerId = '" + customerid + "';");
-           }
-       }
-       catch (SQLException e) {
-       e.printStackTrace();
-       }
+                        Main.getDBHelper().runDMS.apply("INSERT INTO city (city, countryId, createDate, createdBy, lastUpdateBy) VALUES ('" + customercity.get() + "', '" + countryId + "', now(), '" + username + "', '" + username + "');");
+                        ResultSet r5 = Main.getDBHelper().runQuery.apply("SELECT cityId from city WHERE city = '" + customercity.get() + "' AND countryId = '" + countryId + "'");
+                        while (r5.next()) {
+                            cityId = r5.getObject(1).toString();
+                        }
+                    }
 
-        Stage stage = (Stage) customersavebutton.getScene().getWindow();
-        stage.close();
+                    Main.getDBHelper().runDMS.apply("INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES ('" + customeraddress1.get() + "', '" + customeraddress2.get() + "', '" + cityId + "', '" + customerpostalcode.get() + "', '" + customerphonenumber.get() + "', now(), '" + username + "', '" + username + "');");
+                    ResultSet r6 = Main.getDBHelper().runQuery.apply("SELECT addressId from address where address = '" + customeraddress1.get() + "' AND address2  = '" + customeraddress2.get() + "' AND postalCode = '" + customerpostalcode.get() + "'  AND phone = '" + customerphonenumber.get() + "' AND cityId = '" + cityId + "';");
+                    while (r6.next()) {
+                        addressid = r6.getObject(1).toString();
+                    }
+                }
+                if (create) {
+                    Main.getDBHelper().runDMS.apply("INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES ('" + customername.get() + "', '" + addressid + "', '1', now(), '" + username + "', '" + username + "');");
+                } else {
+                    Main.getDBHelper().runDMS.apply("UPDATE customer SET customerName = '" + customername.get() + "', addressId = '" + addressid + "', lastUpdateBy = '" + username + "' WHERE customerId = '" + customerid + "';");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            Stage stage = (Stage) customersavebutton.getScene().getWindow();
+            stage.close();
+        }
     }
 
     public void apptsavebuttonpressed(ActionEvent actionEvent) {
-        //if create == true, create new db entry
+        if (checkempty(2)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error: Required Information not given");
+            alert.setTitle("Required Field Empty");
+            alert.setContentText("One or more required fields have been left empty or contain an invalid value. Please check your input and try again!" + System.lineSeparator()  + System.lineSeparator() + "Please note: Start and End Times must be entered as a 4-digit time number in 24hr-format (e.g. 1600 for 4PM)");
+            alert.showAndWait();
+        }
+        else {
+            String startdatetime = apptstartdatepicker.getValue().format(DateTimeFormatter.ofPattern("YYYY-MM-DD")) + " " + apptstarttime.get().substring(0,1) + ":" + apptstarttime.get().substring(2,3) + ":00";
+            String enddatetime = apptenddatepicker.getValue().format(DateTimeFormatter.ofPattern("YYYY-MM-DD")) + " " + apptendtime.get().substring(0,1) + ":" + apptendtime.get().substring(2,3) + ":00";
+            if (create) {
+                Main.getDBHelper().runDMS.apply("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy)  values  ('" + apptcustomerid + "', '" + apptconsultantid + "', '" + appttitle.get() + "', '" + apptdescription.get() + "', '" + apptlocation.get() + "', '" + apptcontact.get() +  "', '" + appttype.get() + "', '" + appturl.get() + "', '" + startdatetime + "', '" + enddatetime + "', 'now()', '" + username + "', '" + username + "');");
+            } else {
+                Main.getDBHelper().runQuery.apply("UPDATE appointment SET customerId = '" + apptcustomerid + "', userId = '" + apptconsultantid + "', title = '" + appttitle.get() + "', description = '" + apptdescription.get() + "', location = '" + apptlocation.get() + "', contact = '" + apptcontact.get() + "', type = '" + appttype.get() + "', url = '" + appturl.get() + "', start = '" + startdatetime + "', end = '" + enddatetime + "', lastUpdateBy = '" + username + "' WHERE appointmentId = '" + apptid + "';");
+            }
+        }
     }
 
     public void apptcancelbuttonpressed(ActionEvent actionEvent) {
@@ -248,20 +276,24 @@ public class AddEdit implements Initializable {
         }
     }
 
-    public void initdata(Appointment a, boolean create, String username){
+    public void initdata(Appointment a, boolean create, String username) {
         this.username = username;
         this.create = create;
-        this.apptid = a.getId();
-        appttitle.set(a.getTitle());
-        apptcustomername.set(a.getCustomerName());
-        apptconsultantname.set(a.getConsultantName());
-        apptdescription.set(a.getDescription());
-        appttype.set(a.getType());
-        apptlocation.set(a.getLocation());
-        apptcontact.set(a.getContact());
-        appturl.set(a.getUrl());
-        apptstarttime.set(Integer.toString(a.getStart().getHour()) + Integer.toString(a.getStart().getMinute()));
-        apptendtime.set(Integer.toString(a.getEnd().getHour()) + Integer.toString(a.getEnd().getMinute()));
+        if (!create && a != null) {
+            this.apptid = a.getId();
+            appttitle.set(a.getTitle());
+            apptcustomername.set(a.getCustomerName());
+            apptconsultantname.set(a.getConsultantName());
+            apptdescription.set(a.getDescription());
+            appttype.set(a.getType());
+            apptlocation.set(a.getLocation());
+            apptcontact.set(a.getContact());
+            appturl.set(a.getUrl());
+            apptstarttime.set(Integer.toString(a.getStart().getHour()) + Integer.toString(a.getStart().getMinute()));
+            apptendtime.set(Integer.toString(a.getEnd().getHour()) + Integer.toString(a.getEnd().getMinute()));
+            apptstartdatepicker.setValue(LocalDate.of(a.getStart().getYear(), a.getStart().getMonth(), a.getStart().getDayOfMonth()));
+            apptenddatepicker.setValue(LocalDate.of(a.getEnd().getYear(), a.getEnd().getMonth(), a.getEnd().getDayOfMonth()));
+        }
     }
 
     public void initdata(Customer c, boolean create, String username){
@@ -286,4 +318,21 @@ public class AddEdit implements Initializable {
             }
         }
     }
+
+    private boolean checkempty(int i) { //1 == customer, 2 == appt
+        if (i == 2) {
+
+            if (appttitle.get().isEmpty() || apptcustomername.get().isEmpty() || apptconsultantname.get().isEmpty() || apptdescription.get().isEmpty() || appttype.get().isEmpty() || apptlocation.get().isEmpty() || apptcontact.get().isEmpty() || appturl.get().isEmpty() || apptstarttime.get().length() != 4 || apptendtime.get().length() != 4 || apptstartdatepicker.getValue() == null || apptenddatepicker.getValue() == null || apptcustomerid.isEmpty()){
+                return true;
+            }
+        }
+        else if (i == 1){
+            if (customername.get().isEmpty() || customeraddress1.get().isEmpty() || customeraddress2.get().isEmpty() || customercity.get().isEmpty() || customercountry.get().isEmpty() || customerpostalcode.get().isEmpty() || customerphonenumber.get().isEmpty()){
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 }

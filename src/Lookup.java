@@ -379,20 +379,20 @@ public class Lookup implements Initializable {
     }
 
     public void customermodifyselectedbuttonpressed(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            AddEdit addEdit = loader.getController();
-            Customer c = new Customer();
-            addEdit.initdata(customerviewtable.getSelectionModel().getSelectedItem(),false, username);
-            addEdit.loadPane(1);
-            stage.showAndWait();
-            refreshCustomerTable();
-        }
-        catch (Exception e){
-            e.printStackTrace();
+        if (customerviewtable.getSelectionModel().getSelectedItem() != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                AddEdit addEdit = loader.getController();
+                addEdit.initdata(customerviewtable.getSelectionModel().getSelectedItem(), false, username);
+                addEdit.loadPane(1);
+                stage.showAndWait();
+                refreshCustomerTable();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -679,11 +679,39 @@ public class Lookup implements Initializable {
     }
 
     public void apptnewbuttonpressed(ActionEvent actionEvent) {
-        //TODO implement new appt button
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            AddEdit addEdit = loader.getController();
+            Appointment a = new Appointment();
+            addEdit.initdata(a,true, username);
+            addEdit.loadPane(2);
+            stage.showAndWait();
+            refreshAppointmentTable();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void apptmodifybuttonpressed(ActionEvent actionEvent) {
-        //TODO implement appt modify selected
+        if (apptsearchtable.getSelectionModel().getSelectedItem() != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                AddEdit addEdit = loader.getController();
+                addEdit.initdata(apptsearchtable.getSelectionModel().getSelectedItem(), false, username);
+                addEdit.loadPane(2);
+                stage.showAndWait();
+                refreshAppointmentTable();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void apptdeletebuttonpressed(ActionEvent actionEvent) {

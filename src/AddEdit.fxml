@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="576.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddEdit">
    <children>
-      <Pane fx:id="AddEditCustomerPane" prefHeight="576.0" prefWidth="512.0" visible="false">
+      <Pane fx:id="AddEditCustomerPane" prefHeight="576.0" prefWidth="512.0">
          <children>
             <Label fx:id="addcustomerlabel" layoutX="198.0" layoutY="44.0" text="Add Customer">
                <font>
@@ -36,7 +36,7 @@
             <Button fx:id="customersavebutton" layoutX="206.0" layoutY="424.0" mnemonicParsing="false" onAction="#customersavebuttonpressed" text="Save" />
          </children>
       </Pane>
-      <Pane fx:id="AddEditAppointmentPane" prefHeight="576.0" prefWidth="512.0">
+      <Pane fx:id="AddEditAppointmentPane" prefHeight="576.0" prefWidth="512.0" visible="false">
          <children>
             <Label fx:id="addapptlabel" layoutX="198.0" layoutY="24.0" text="Add Appointment">
                <font>
