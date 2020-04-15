@@ -3,19 +3,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Lookup implements Initializable {
@@ -139,9 +146,9 @@ public class Lookup implements Initializable {
     public ToggleGroup consultantsearchmethodgroup = new ToggleGroup();
     public ToggleGroup apptinputtypegroup = new ToggleGroup();
     public ToggleGroup apptsearchmethodgroup = new ToggleGroup();
-    public SimpleStringProperty customerinput = new SimpleStringProperty();
-    public SimpleStringProperty consultantinput = new SimpleStringProperty();
-    public SimpleStringProperty apptinput = new SimpleStringProperty();
+    public SimpleStringProperty customerinput = new SimpleStringProperty("");
+    public SimpleStringProperty consultantinput = new SimpleStringProperty("");
+    public SimpleStringProperty apptinput = new SimpleStringProperty("");
     public ObservableList<Customer> customerObservableList = FXCollections.observableArrayList();
     public ObservableList<User> userObservableList = FXCollections.observableArrayList();
     public ObservableList<Appointment> appointmentObservableList = FXCollections.observableArrayList();
@@ -149,6 +156,11 @@ public class Lookup implements Initializable {
     public ObservableList<User> userbuff = FXCollections.observableArrayList();
     public ObservableList<Appointment> apptbuff = FXCollections.observableArrayList();
     public int panetoLoad = 0;
+    public String username = "";
+
+
+    final Clipboard clipboard = Clipboard.getSystemClipboard();
+    final ClipboardContent content = new ClipboardContent();
 
 
 
@@ -237,7 +249,7 @@ public class Lookup implements Initializable {
 
         if (customerIDratio.isSelected()){ //if searching via customerID
             if (customercontainsratio.isSelected()){ //and selected contains
-                if (customerinput.get().length() == 0) {
+                if (customerinput == null || customerinput.get().length() == 0) {
                     refreshCustomerTable();
                 } else {
                     this.customerObservableList.setAll(custbuff);
@@ -263,7 +275,7 @@ public class Lookup implements Initializable {
 
                 }
             else if (customerexactratio.isSelected()){ //and selected exact
-            if (customerinput.get().length() == 0) {
+            if (customerinput == null || customerinput.get().length() == 0) {
                 refreshCustomerTable();
             } else {
                 this.customerObservableList.setAll(custbuff);
@@ -290,7 +302,7 @@ public class Lookup implements Initializable {
         }
         else if (customernameRatio.isSelected()){ //if searching via customer name
             if (customercontainsratio.isSelected()){ //and selected contains
-                if (customerinput.get().length() == 0) {
+                if (customerinput == null || customerinput.get().length() == 0) {
                     refreshCustomerTable();
                 } else {
                     this.customerObservableList.setAll(custbuff);
@@ -315,7 +327,7 @@ public class Lookup implements Initializable {
                 }
             }
             else if (customerexactratio.isSelected()){ //and selected exact
-                if (customerinput.get().length() == 0) {
+                if (customerinput == null || customerinput.get().length() == 0) {
                     refreshCustomerTable();
                 } else {
                     this.customerObservableList.setAll(custbuff);
@@ -349,15 +361,93 @@ public class Lookup implements Initializable {
     }
 
     public void customeraddbuttonpressed(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            AddEdit addEdit = loader.getController();
+            Customer c = new Customer();
+            addEdit.initdata(c,true, username);
+            addEdit.loadPane(1);
+            stage.showAndWait();
+            refreshCustomerTable();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void customermodifyselectedbuttonpressed(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEdit.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            AddEdit addEdit = loader.getController();
+            Customer c = new Customer();
+            addEdit.initdata(customerviewtable.getSelectionModel().getSelectedItem(),false, username);
+            addEdit.loadPane(1);
+            stage.showAndWait();
+            refreshCustomerTable();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void customerdeletebuttonpressed(ActionEvent actionEvent) {
+        boolean check = false;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Delete Customer");
+        alert.setContentText("Are you sure you want to delete the selected customer?" + System.lineSeparator() + System.lineSeparator() + "Please note: This cannot be undone and will remove the selected customer from the database.");
+        alert.getButtonTypes().set(0, ButtonType.YES);
+        alert.getButtonTypes().set(1, ButtonType.NO);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.YES) check = true;
+        if (check){
+        boolean depcheck = false;
+        Integer depcount = 0;
+        String selectedcustId = customerviewtable.getSelectionModel().getSelectedItem().getCustomerId().toString();
+        ResultSet r = getqueryResult(Main.getDBHelper().runQuery.apply("SELECT COUNT(appointmentId) from appointment WHERE customerId = '" + selectedcustId + "';"));
+      try {
+          while (r.next()) {
+              if (r.getInt(1) != 0) {
+                  depcheck = true;
+                  depcount = r.getInt(1);
+              }
+          }
+      }
+      catch (SQLException e){
+          e.printStackTrace();
+      }
+
+        if (depcheck){
+            boolean check2 = false;
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert2.setTitle("Confirmation");
+            alert2.setHeaderText("Delete Customer");
+            alert2.setContentText("Customer has " + depcount.toString() + " appointments." + System.lineSeparator() + System.lineSeparator() + "Please note: Deleting this customer will also delete all associated appointments. Do you wish to proceed?");
+            alert2.getButtonTypes().set(0, ButtonType.YES);
+            alert2.getButtonTypes().set(1, ButtonType.NO);
+            Optional<ButtonType> result2 = alert2.showAndWait();
+            if (result2.get() == ButtonType.YES) check2 = true;
+            if (check2){
+                dms(Main.getDBHelper().runDMS.apply("DELETE FROM appointment WHERE customerId = '" + selectedcustId + "';"));
+                dms(Main.getDBHelper().runDMS.apply("DELETE FROM customer WHERE customerId = '" + selectedcustId + "';"));
+            }
+        }
+        else {
+            dms(Main.getDBHelper().runDMS.apply("DELETE FROM customer WHERE customerId = '" + selectedcustId + "';"));
+        }
+        }
+        refreshCustomerTable();
     }
 
     public void customercancelbuttonpressed(ActionEvent actionEvent) {
+        Stage stage = (Stage) customercancelbutton.getScene().getWindow();
+        stage.close();
     }
 
 
@@ -589,15 +679,34 @@ public class Lookup implements Initializable {
     }
 
     public void apptnewbuttonpressed(ActionEvent actionEvent) {
+        //TODO implement new appt button
     }
 
     public void apptmodifybuttonpressed(ActionEvent actionEvent) {
+        //TODO implement appt modify selected
     }
 
     public void apptdeletebuttonpressed(ActionEvent actionEvent) {
+        boolean check = false;
+        if (apptsearchtable.getSelectionModel().getSelectedItem() != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText("Delete Appointment");
+            alert.setContentText("Are you sure you want to delete the selected appointment?" + System.lineSeparator() + System.lineSeparator() + "Please note: This cannot be undone and will remove the selected appointment from the database.");
+            alert.getButtonTypes().set(0, ButtonType.YES);
+            alert.getButtonTypes().set(1, ButtonType.NO);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) check = true;
+            if (check) {
+                dms(Main.getDBHelper().runDMS.apply("DELETE FROM appointment WHERE appointmentId = '" + apptsearchtable.getSelectionModel().getSelectedItem().getId() +"';"));
+            }
+            refreshAppointmentTable();
+        }
     }
 
     public void apptcancelbuttonpressed(ActionEvent actionEvent) {
+        Stage stage = (Stage) apptcancelbutton.getScene().getWindow();
+        stage.close();
     }
 
     public void apptconsultantnameratiopressed(ActionEvent actionEvent) {
@@ -622,13 +731,122 @@ public class Lookup implements Initializable {
     }
 
     public void consultantcancelbuttonpressed(ActionEvent actionEvent) {
+        Stage stage = (Stage) consultantcancelbutton.getScene().getWindow();
+        stage.close();
     }
 
     public void consultantcopyidbuttonpressed(ActionEvent actionEvent) {
+        content.putString(this.consultantsearchtableview.getSelectionModel().getSelectedItem().getUserId().toString());
+        clipboard.setContent(content);
     }
 
     public void consultantsearchbuttonpressed(ActionEvent actionEvent) {
+        if (consultantidratio.isSelected()){ //if searching via consultantId
+            if (consultantcontainsratio.isSelected()){ //and selected contains
+                if (consultantinput.get().length() == 0) {
+                    refreshCustomerTable();
+                } else {
+                    this.userObservableList.setAll(userbuff);
+                    ObservableList<User> temp = FXCollections.observableArrayList();
+                    boolean check = false;
+                    for (User c : userObservableList){
+                        if (c.getUserId().toString().toLowerCase().contains(consultantinput.get().toLowerCase())){
+                            temp.add(c);
+                            check = true;
+                        }
+                    }
+                    if (!check) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("Error: Consultant DNE");
+                        alert.setTitle("Non-existent consultant");
+                        alert.setContentText("Unable to find a consultant using the criteria specified.");
+                        alert.showAndWait();
+                        refreshConsultantTable();
+                        return;
+                    }
+                    this.userObservableList.setAll(temp);
+                }
 
+            }
+            else if (consultantexactratio.isSelected()){ //and selected exact
+                if (consultantinput.get().length() == 0) {
+                    refreshCustomerTable();
+                } else {
+                    this.userObservableList.setAll(userbuff);
+                    ObservableList<User> temp = FXCollections.observableArrayList();
+                    boolean check = false;
+                    for (User c : userObservableList){
+                        if (c.getUserId().toString().equalsIgnoreCase(consultantinput.get())){
+                            temp.add(c);
+                            check = true;
+                        }
+                    }
+                    if (!check) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("Error: Consultant DNE");
+                        alert.setTitle("Non-existent consultant");
+                        alert.setContentText("Unable to find a consultant using the criteria specified.");
+                        alert.showAndWait();
+                        refreshConsultantTable();
+                        return;
+                    }
+                    this.userObservableList.setAll(temp);
+                }
+            }
+        }
+        else if (consultantnameratio.isSelected()){ //if searching via customer name
+            if (consultantcontainsratio.isSelected()){ //and selected contains
+                if (consultantinput.get().length() == 0) {
+                    refreshCustomerTable();
+                } else {
+                    this.userObservableList.setAll(userbuff);
+                    ObservableList<User> temp = FXCollections.observableArrayList();
+                    boolean check = false;
+                    for (User c : userObservableList){
+                        if (c.getUserName().toLowerCase().contains(consultantinput.get().toLowerCase())){
+                            temp.add(c);
+                            check = true;
+                        }
+                    }
+                    if (!check) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("Error: Consultant DNE");
+                        alert.setTitle("Non-existent consultant");
+                        alert.setContentText("Unable to find a consultant using the criteria specified.");
+                        alert.showAndWait();
+                        refreshConsultantTable();
+                        return;
+                    }
+                    this.userObservableList.setAll(temp);
+                }
+
+            }
+            else if (consultantexactratio.isSelected()){ //and selected exact
+                if (consultantinput.get().length() == 0) {
+                    refreshCustomerTable();
+                } else {
+                    this.userObservableList.setAll(userbuff);
+                    ObservableList<User> temp = FXCollections.observableArrayList();
+                    boolean check = false;
+                    for (User c : userObservableList){
+                        if (c.getUserName().toString().equalsIgnoreCase(consultantinput.get())){
+                            temp.add(c);
+                            check = true;
+                        }
+                    }
+                    if (!check) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("Error: Consultant DNE");
+                        alert.setTitle("Non-existent consultant");
+                        alert.setContentText("Unable to find a consultant using the criteria specified.");
+                        alert.showAndWait();
+                        refreshConsultantTable();
+                        return;
+                    }
+                    this.userObservableList.setAll(temp);
+                }
+            }
+        }
     }
 
 
@@ -711,5 +929,14 @@ public class Lookup implements Initializable {
         this.panetoLoad = i;
     }
 
+    public void initdata(String username){
+        this.username = username;
+    }
+
+    public void dms(int i) { }
+
+    public ResultSet getqueryResult(ResultSet r) {
+        return r;
+    }
 
 }

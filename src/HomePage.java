@@ -245,6 +245,7 @@ public class HomePage implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
             Lookup lookup = loader.getController();
+            lookup.initdata(currentuser);
             lookup.loadPane(1);
         }
         catch (Exception e){
@@ -260,6 +261,7 @@ public class HomePage implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
         Lookup lookup = loader.getController();
+        lookup.initdata(currentuser);
         lookup.loadPane(2);
         }
         catch (Exception e){
@@ -275,6 +277,7 @@ public class HomePage implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
         Lookup lookup = loader.getController();
+        lookup.initdata(currentuser);
         lookup.loadPane(3);
         }
         catch (Exception e){

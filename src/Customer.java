@@ -57,6 +57,9 @@ public class Customer {
         }
     }
 
+    public Customer() {
+    }
+
     public Integer getCustomerId() {
         return customerId;
     }

@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane disable="true" prefHeight="400.0" prefWidth="600.0" visible="false" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FindPage">
+<AnchorPane disable="true" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FindPage">
    <children>
-      <Pane fx:id="FindConsultantPane" prefHeight="400.0" prefWidth="600.0">
+      <Pane fx:id="FindConsultantPane" prefHeight="400.0" prefWidth="600.0" visible="false">
          <children>
             <TableView layoutX="222.0" layoutY="12.0" prefHeight="345.0" prefWidth="356.0">
               <columns>
@@ -31,7 +31,7 @@
              <Button layoutX="526.0" layoutY="361.0" mnemonicParsing="false" text="Cancel" />
             <Button layoutX="222.0" layoutY="361.0" mnemonicParsing="false" text="Use Selected Consultant" />
          </children></Pane>
-      <Pane fx:id="FindCustomerPane" disable="true" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <Pane fx:id="FindCustomerPane" disable="true" prefHeight="400.0" prefWidth="600.0">
          <children>
             <TableView layoutX="222.0" layoutY="12.0" prefHeight="345.0" prefWidth="356.0">
                <columns>

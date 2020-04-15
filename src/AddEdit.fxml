@@ -6,14 +6,14 @@
 
 <AnchorPane prefHeight="576.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddEdit">
    <children>
-      <Pane fx:id="AddEditCustomerPane" disable="true" prefHeight="576.0" prefWidth="512.0" visible="false">
+      <Pane fx:id="AddEditCustomerPane" prefHeight="576.0" prefWidth="512.0" visible="false">
          <children>
-            <Label layoutX="198.0" layoutY="44.0" text="Add Customer">
+            <Label fx:id="addcustomerlabel" layoutX="198.0" layoutY="44.0" text="Add Customer">
                <font>
                   <Font name="Calibri" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="185.0" layoutY="44.0" text="Modify Customer">
+            <Label fx:id="modifycustomerlabel" layoutX="185.0" layoutY="44.0" text="Modify Customer">
                <font>
                   <Font name="Calibri" size="20.0" />
                </font>
@@ -25,25 +25,25 @@
             <Label layoutX="150.0" layoutY="280.0" text="Country:" />
             <Label layoutX="128.0" layoutY="317.0" text="Postal Code:" />
             <Label layoutX="111.0" layoutY="359.0" text="Phone Number:" />
-            <TextField layoutX="206.0" layoutY="114.0" />
-            <TextField layoutX="206.0" layoutY="154.0" />
-            <TextField layoutX="206.0" layoutY="196.0" />
-            <TextField layoutX="206.0" layoutY="237.0" />
-            <TextField layoutX="206.0" layoutY="276.0" />
-            <TextField layoutX="206.0" layoutY="313.0" />
-            <TextField layoutX="206.0" layoutY="355.0" />
-            <Button layoutX="301.0" layoutY="424.0" mnemonicParsing="false" text="Cancel" />
-            <Button layoutX="206.0" layoutY="424.0" mnemonicParsing="false" text="Save" />
+            <TextField fx:id="customernamefield" layoutX="206.0" layoutY="114.0" />
+            <TextField fx:id="customeraddress1field" layoutX="206.0" layoutY="154.0" />
+            <TextField fx:id="customeraddress2field" layoutX="206.0" layoutY="196.0" />
+            <TextField fx:id="customercityfield" layoutX="206.0" layoutY="237.0" />
+            <TextField fx:id="customercountryfield" layoutX="206.0" layoutY="276.0" />
+            <TextField fx:id="customerpostalcodefield" layoutX="206.0" layoutY="313.0" />
+            <TextField fx:id="customerphonenumberfield" layoutX="206.0" layoutY="355.0" />
+            <Button fx:id="customercancelbutton" layoutX="301.0" layoutY="424.0" mnemonicParsing="false" onAction="#customercancelbuttonpressed" text="Cancel" />
+            <Button fx:id="customersavebutton" layoutX="206.0" layoutY="424.0" mnemonicParsing="false" onAction="#customersavebuttonpressed" text="Save" />
          </children>
       </Pane>
-      <Pane fx:id="AddEditCustomerPane1" disable="true" prefHeight="576.0" prefWidth="512.0" visible="false">
+      <Pane fx:id="AddEditAppointmentPane" prefHeight="576.0" prefWidth="512.0">
          <children>
-            <Label layoutX="198.0" layoutY="24.0" text="Add Appointment">
+            <Label fx:id="addapptlabel" layoutX="198.0" layoutY="24.0" text="Add Appointment">
                <font>
                   <Font name="Calibri" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="185.0" layoutY="24.0" text="Modify Appointment">
+            <Label fx:id="modifyapptlabel" layoutX="185.0" layoutY="24.0" text="Modify Appointment">
                <font>
                   <Font name="Calibri" size="20.0" />
                </font>
@@ -55,25 +55,28 @@
             <Label layoutX="151.0" layoutY="349.0" text="Location:" />
             <Label layoutX="153.0" layoutY="381.0" text="Contact:" />
             <Label layoutX="173.0" layoutY="412.0" text="URL:" />
-            <TextField layoutX="206.0" layoutY="88.0" />
-            <TextField editable="false" layoutX="206.0" layoutY="128.0" />
-            <TextField editable="false" layoutX="206.0" layoutY="170.0" />
-            <Button layoutX="292.0" layoutY="531.0" mnemonicParsing="false" text="Cancel" />
-            <Button layoutX="197.0" layoutY="531.0" mnemonicParsing="false" text="Save" />
+            <TextField fx:id="appttitlefield" layoutX="206.0" layoutY="88.0" />
+            <TextField fx:id="apptcustomerfield" disable="true" editable="false" layoutX="206.0" layoutY="128.0" />
+            <TextField fx:id="apptconsultantfield" disable="true" editable="false" layoutX="206.0" layoutY="170.0" />
+            <Button fx:id="apptcancelbutton" layoutX="292.0" layoutY="531.0" mnemonicParsing="false" onAction="#apptcancelbuttonpressed" text="Cancel" />
+            <Button fx:id="apptsavebutton" layoutX="197.0" layoutY="531.0" mnemonicParsing="false" onAction="#apptsavebuttonpressed" text="Save" />
             <Label layoutX="24.0" layoutY="443.0" text="Start Date:" />
             <Label layoutX="27.0" layoutY="474.0" text="End Date:" />
-            <TextArea layoutX="206.0" layoutY="210.0" prefHeight="130.0" prefWidth="261.0" />
-            <TextField layoutX="206.0" layoutY="345.0" />
-            <TextField layoutX="206.0" layoutY="377.0" />
-            <TextField layoutX="206.0" layoutY="408.0" />
-            <DatePicker layoutX="88.0" layoutY="439.0" />
-            <DatePicker layoutX="88.0" layoutY="470.0" />
+            <TextArea fx:id="apptdescriptiontextbox" layoutX="206.0" layoutY="210.0" prefHeight="95.0" prefWidth="261.0" />
+            <TextField fx:id="apptlocationfield" layoutX="206.0" layoutY="345.0" />
+            <TextField fx:id="apptcontactfield" layoutX="206.0" layoutY="377.0" />
+            <TextField fx:id="appturlfield" layoutX="206.0" layoutY="408.0" />
+            <DatePicker fx:id="apptstartdatepicker" layoutX="88.0" layoutY="439.0" />
+            <DatePicker fx:id="apptenddatepicker" layoutX="88.0" layoutY="470.0" />
             <Label layoutX="280.0" layoutY="443.0" text="Start Time:" />
             <Label layoutX="280.0" layoutY="474.0" text="End Time:" />
-            <TextField layoutX="343.0" layoutY="439.0" />
-            <TextField layoutX="343.0" layoutY="470.0" />
-            <Button layoutX="365.0" layoutY="128.0" mnemonicParsing="false" text="Find" />
-            <Button layoutX="365.0" layoutY="170.0" mnemonicParsing="false" text="Find" />
+            <TextField fx:id="apptstarttimefield" layoutX="343.0" layoutY="439.0" />
+            <TextField fx:id="apptendtimefield" layoutX="343.0" layoutY="470.0" />
+            <Button fx:id="apptcustomerfindbutton" layoutX="365.0" layoutY="128.0" mnemonicParsing="false" onAction="#apptcustomerfindbuttonpressed" text="Find" />
+            <Button fx:id="apptconsultantfindbutton" layoutX="365.0" layoutY="170.0" mnemonicParsing="false" onAction="#apptconsultantfindbuttonpressed" text="Find" />
+            <Label layoutX="83.0" layoutY="317.0" prefHeight="17.0" prefWidth="116.0" text="Type of Appointment:" />
+            <TextField fx:id="appttypefield" layoutX="206.0" layoutY="313.0" />
+            <Label layoutX="349.0" layoutY="495.0" text="Enter time in 24hr format." />
          </children>
       </Pane>
    </children>
