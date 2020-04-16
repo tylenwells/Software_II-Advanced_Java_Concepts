@@ -1,7 +1,10 @@
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -10,10 +13,11 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalField;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 @SuppressWarnings("ALL")
 public class AddEdit implements Initializable {
@@ -95,6 +99,10 @@ public class AddEdit implements Initializable {
     SimpleStringProperty customercountry = new SimpleStringProperty("");
     SimpleStringProperty customerpostalcode = new SimpleStringProperty("");
     SimpleStringProperty customerphonenumber = new SimpleStringProperty("");
+    Consumer<Customer> onCustomerComplete = result -> {
+        this.apptcustomerid = result.getCustomerId().toString();
+        this.apptcustomername.set(result.getCustomerName());
+    };
 
     String apptid = "";
     String apptcustomerid = "";
@@ -109,6 +117,10 @@ public class AddEdit implements Initializable {
     SimpleStringProperty appturl = new SimpleStringProperty("");
     SimpleStringProperty apptstarttime = new SimpleStringProperty("");
     SimpleStringProperty apptendtime = new SimpleStringProperty("");
+    Consumer<User> onConsultantComplete = result -> {
+        this.apptconsultantid = result.getUserId().toString();
+        this.apptconsultantname.set(result.getUserName());
+    };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -133,15 +145,97 @@ public class AddEdit implements Initializable {
         apptstarttimefield.textProperty().bindBidirectional(apptstarttime);
         apptendtimefield.textProperty().bindBidirectional(apptendtime);
 
+        configure();
+
     }
 
 
+    public void configure() {
+        //Formatting
+        UnaryOperator<TextFormatter.Change> filter = change -> { //4 digit 24hr time filter
+
+            String text = change.getText();
+            if (text.matches("[0-9]*")) {
+                return change;
+            }
+            return null;
+            /*String text = change.getText();
+            int startpos = change.getRangeStart();
+            int endpos = change.getRangeEnd();
+            int len = change.getControlNewText().length();
+            if (text.matches("[0-9]*")) {
+                if (change.getControlNewText().length() > 4) {
+                    return null;
+                }
+                if (startpos == endpos) {
+                    if (len == 1) {
+                        switch (startpos) {
+                            case 0: {
+                                if (Integer.valueOf(text) > 2) {
+                                    return null;
+                                } else {
+                                    return change;
+                                }
+                            }
+                            case 1: {
+                                if (Integer.valueOf(change.getControlNewText().substring(0, 1)) == 2) {
+                                    if (Integer.valueOf(text) > 3) {
+                                        return null;
+                                    } else {
+                                        return change;
+                                    }
+                                } else if (Integer.valueOf(change.getControlNewText().substring(0, 1)) < 2) {
+                                    return change;
+                                }
+                            }
+                            case 2: {
+                                if (Integer.valueOf(text) > 5) {
+                                    return null;
+                                } else if (Integer.valueOf(text) <= 5) {
+                                    return change;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;*/
+        };
+
+        TextFormatter<String> startTimeFormatter = new TextFormatter<>(filter);
+        TextFormatter<String> endTimeFormatter = new TextFormatter<>(filter);
+        apptstarttimefield.setTextFormatter(startTimeFormatter);
+        apptendtimefield.setTextFormatter(endTimeFormatter);
+    }
+
     public void apptcustomerfindbuttonpressed(ActionEvent actionEvent) {
-        //create consumer and open find page
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FindPage.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            FindPage findPage = loader.getController();
+            findPage.initcustomerdata(onCustomerComplete);
+            findPage.loadpane(1);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void apptconsultantfindbuttonpressed(ActionEvent actionEvent) {
-        //create consumer and open find page
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FindPage.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            FindPage findPage = loader.getController();
+            findPage.initconsultantdata(onConsultantComplete);
+            findPage.loadpane(2);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void customersavebuttonpressed(ActionEvent actionEvent) {
@@ -218,13 +312,20 @@ public class AddEdit implements Initializable {
             alert.showAndWait();
         }
         else {
-            String startdatetime = apptstartdatepicker.getValue().format(DateTimeFormatter.ofPattern("YYYY-MM-DD")) + " " + apptstarttime.get().substring(0,1) + ":" + apptstarttime.get().substring(2,3) + ":00";
-            String enddatetime = apptenddatepicker.getValue().format(DateTimeFormatter.ofPattern("YYYY-MM-DD")) + " " + apptendtime.get().substring(0,1) + ":" + apptendtime.get().substring(2,3) + ":00";
+            String startdatetime = apptstartdatepicker.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE);
+            startdatetime = startdatetime.concat(" ");
+            startdatetime = startdatetime.concat(apptstarttime.get().substring(0, 2));
+            startdatetime = startdatetime.concat(":");
+            startdatetime = startdatetime.concat(apptstarttime.get().substring(2, 4));
+            startdatetime = startdatetime.concat(":00");
+            String enddatetime = apptenddatepicker.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + apptendtime.get().substring(0, 2) + ":" + apptendtime.get().substring(2, 4) + ":00";
             if (create) {
-                Main.getDBHelper().runDMS.apply("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy)  values  ('" + apptcustomerid + "', '" + apptconsultantid + "', '" + appttitle.get() + "', '" + apptdescription.get() + "', '" + apptlocation.get() + "', '" + apptcontact.get() +  "', '" + appttype.get() + "', '" + appturl.get() + "', '" + startdatetime + "', '" + enddatetime + "', 'now()', '" + username + "', '" + username + "');");
+                Main.getDBHelper().runDMS.apply("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy)  values  ('" + apptcustomerid + "', '" + apptconsultantid + "', '" + appttitle.get() + "', '" + apptdescription.get() + "', '" + apptlocation.get() + "', '" + apptcontact.get() + "', '" + appttype.get() + "', '" + appturl.get() + "', '" + startdatetime + "', '" + enddatetime + "', now(), '" + username + "', '" + username + "');");
             } else {
-                Main.getDBHelper().runQuery.apply("UPDATE appointment SET customerId = '" + apptcustomerid + "', userId = '" + apptconsultantid + "', title = '" + appttitle.get() + "', description = '" + apptdescription.get() + "', location = '" + apptlocation.get() + "', contact = '" + apptcontact.get() + "', type = '" + appttype.get() + "', url = '" + appturl.get() + "', start = '" + startdatetime + "', end = '" + enddatetime + "', lastUpdateBy = '" + username + "' WHERE appointmentId = '" + apptid + "';");
+                Main.getDBHelper().runDMS.apply("UPDATE appointment SET customerId = '" + apptcustomerid + "', userId = '" + apptconsultantid + "', title = '" + appttitle.get() + "', description = '" + apptdescription.get() + "', location = '" + apptlocation.get() + "', contact = '" + apptcontact.get() + "', type = '" + appttype.get() + "', url = '" + appturl.get() + "', start = '" + startdatetime + "', end = '" + enddatetime + "', lastUpdateBy = '" + username + "' WHERE appointmentId = '" + apptid + "';");
             }
+            Stage stage = (Stage) apptsavebutton.getScene().getWindow();
+            stage.close();
         }
     }
 
@@ -281,6 +382,8 @@ public class AddEdit implements Initializable {
         this.create = create;
         if (!create && a != null) {
             this.apptid = a.getId();
+            this.apptcustomerid = a.getCustomerId();
+            this.apptconsultantid = a.getUserId();
             appttitle.set(a.getTitle());
             apptcustomername.set(a.getCustomerName());
             apptconsultantname.set(a.getConsultantName());
@@ -289,8 +392,16 @@ public class AddEdit implements Initializable {
             apptlocation.set(a.getLocation());
             apptcontact.set(a.getContact());
             appturl.set(a.getUrl());
-            apptstarttime.set(Integer.toString(a.getStart().getHour()) + Integer.toString(a.getStart().getMinute()));
-            apptendtime.set(Integer.toString(a.getEnd().getHour()) + Integer.toString(a.getEnd().getMinute()));
+            String hour = Integer.toString(a.getStart().getHour());
+            hour = ("00" + hour).substring(hour.length());
+            String minute = Integer.toString(a.getStart().getMinute());
+            minute = ("00" + minute).substring(minute.length());
+            apptstarttime.set(hour + minute);
+            hour = Integer.toString(a.getEnd().getHour());
+            hour = ("00" + hour).substring(hour.length());
+            minute = Integer.toString(a.getEnd().getMinute());
+            minute = ("00" + minute).substring(minute.length());
+            apptendtime.set(hour + minute);
             apptstartdatepicker.setValue(LocalDate.of(a.getStart().getYear(), a.getStart().getMonth(), a.getStart().getDayOfMonth()));
             apptenddatepicker.setValue(LocalDate.of(a.getEnd().getYear(), a.getEnd().getMonth(), a.getEnd().getDayOfMonth()));
         }
@@ -322,7 +433,7 @@ public class AddEdit implements Initializable {
     private boolean checkempty(int i) { //1 == customer, 2 == appt
         if (i == 2) {
 
-            if (appttitle.get().isEmpty() || apptcustomername.get().isEmpty() || apptconsultantname.get().isEmpty() || apptdescription.get().isEmpty() || appttype.get().isEmpty() || apptlocation.get().isEmpty() || apptcontact.get().isEmpty() || appturl.get().isEmpty() || apptstarttime.get().length() != 4 || apptendtime.get().length() != 4 || apptstartdatepicker.getValue() == null || apptenddatepicker.getValue() == null || apptcustomerid.isEmpty()){
+            if (appttitle.get().isEmpty() || apptcustomername.get().isEmpty() || apptconsultantname.get().isEmpty() || apptdescription.get().isEmpty() || appttype.get().isEmpty() || apptlocation.get().isEmpty() || apptcontact.get().isEmpty() || appturl.get().isEmpty() || apptstarttime.get().length() != 4 ||apptendtime.get().length() != 4 || apptstartdatepicker.getValue() == null || apptenddatepicker.getValue() == null || apptcustomerid.isEmpty()){
                 return true;
             }
         }
@@ -331,6 +442,25 @@ public class AddEdit implements Initializable {
                 return true;
             }
 
+        }
+        if (checktimes()){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checktimes(){
+        try{
+            LocalTime test = LocalTime.of(Integer.valueOf(apptstarttime.get().substring(0,2)), Integer.valueOf(apptstarttime.get().substring(2,4)));
+            test = LocalTime.of(Integer.valueOf(apptendtime.get().substring(0,2)), Integer.valueOf(apptendtime.get().substring(2,4)));
+        }
+        catch (Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error: Invalid Time Entered!");
+            alert.setTitle("Invalid Time");
+            alert.setContentText("Either the start time field or the end time field contains an invalid value. Please check your input and try again!" + System.lineSeparator() + System.lineSeparator() + "Time input should be in 4-digit 24hr clock format. (Ex. 1630 for 04:30PM)");
+            alert.showAndWait();
+            return true;
         }
         return false;
     }

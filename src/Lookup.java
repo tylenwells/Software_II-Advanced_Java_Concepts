@@ -24,8 +24,12 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class Lookup implements Initializable {
+
+    @FXML
+    public AnchorPane anchorPane;
 
     //customer node declarations
     @FXML
@@ -135,10 +139,7 @@ public class Lookup implements Initializable {
 
 
     //other declarations
-    @FXML
-    public StackPane stackPane;
-    @FXML
-    public AnchorPane anchorPane;
+
 
     public ToggleGroup customerinputtypegroup = new ToggleGroup();
     public ToggleGroup customersearchmethodgroup = new ToggleGroup();
@@ -966,5 +967,7 @@ public class Lookup implements Initializable {
     public ResultSet getqueryResult(ResultSet r) {
         return r;
     }
+
+
 
 }
