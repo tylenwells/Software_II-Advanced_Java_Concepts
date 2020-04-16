@@ -12,11 +12,13 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("ALL")
@@ -343,6 +345,64 @@ public class AddEdit implements Initializable {
 
     //misc functions
 
+    public boolean checkapptoverlap() {
+        String apptdate = apptstartdatepicker.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String appttomorrow = apptstartdatepicker.getValue().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        List<Appointment> samedayappts = new ArrayList<Appointment>();
+        ResultSet r1 = Main.getDBHelper().runQuery.apply("SELECT * from appointment WHERE start >= '" + apptdate + " 00:00:00' AND start < '" + appttomorrow + " 00:00:00'");
+        try {
+            while (r1.next()) {
+                Appointment temp = new Appointment();
+                temp.setId(r1.getObject(1).toString());
+                temp.setCustomerId(r1.getObject(2).toString());
+                temp.setUserId(r1.getObject(3).toString());
+                temp.setTitle(r1.getObject(4).toString());
+                temp.setDescription(r1.getObject(5).toString());
+                temp.setLocation(r1.getObject(6).toString());
+                temp.setContact(r1.getObject(7).toString());
+                temp.setType(r1.getObject(8).toString());
+                temp.setUrl(r1.getObject(9).toString());
+                temp.setStart(convertSQLUTCStrtoLocalTime.apply(r1.getObject(10).toString().substring(0, 19)));
+                temp.setEnd(convertSQLUTCStrtoLocalTime.apply(r1.getObject(11).toString().substring(0, 19)));
+                temp.setCreateDate(convertSQLUTCStrtoLocalTime.apply(r1.getObject(12).toString().substring(0, 19)));
+                temp.setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r1.getObject(14).toString().substring(0, 19)));
+                samedayappts.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            for (Appointment appt: samedayappts) {
+                String apptstart = ("00" + Integer.valueOf(appt.getStart().getHour()).toString()).substring(Integer.valueOf(appt.getStart().getHour()).toString().length());
+                String apptend = ("00" + Integer.valueOf(appt.getEnd().getHour()).toString()).substring(Integer.valueOf(appt.getEnd().getHour()).toString().length());
+                if (!((Integer.valueOf(apptstart) <= Integer.valueOf(apptstarttime.get()) && Integer.valueOf(apptend) <= Integer.valueOf(apptstarttime.get())) || (Integer.valueOf(apptstart) >= Integer.valueOf(apptendtime.get()) && Integer.valueOf(apptend) >= Integer.valueOf(apptendtime.get())))){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("Error: Overlapping Appointment");
+                    alert.setTitle("Appointments Overlap");
+                    alert.setContentText("Appointment as entered would overlap with an existing appointment. Please review your schedule for the day and retry with an open time slot!");
+                    alert.showAndWait();
+                    return true;
+                };
+            }
+        }
+    return false;
+    }
+
+    public boolean checkapptbusinesshours() { //assumes 8AM to 5PM standard workday
+        int apptduration = Integer.valueOf(apptendtime.get()) - Integer.valueOf(apptstarttime.get());
+        int apptstart = Integer.valueOf(apptstarttime.get());
+        if (apptstart < 800 || (apptstart+apptduration) > 1700 ) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error: Appointment out of business hours");
+            alert.setTitle("Time Error");
+            alert.setContentText("The appointment cannot be scheduled outside of business hours. Please review the times entered and try again.");
+            alert.showAndWait();
+            return true;
+        }
+        return false;
+    }
+
+
+
     public void loadPane(int i) { //1 = Customer, 2 = Appt
         switch (i) {
             case 1: {
@@ -443,7 +503,7 @@ public class AddEdit implements Initializable {
             }
 
         }
-        if (checktimes()){
+        if (checktimes() || checkapptbusinesshours() || checkapptoverlap()){
             return true;
         }
         return false;
@@ -465,4 +525,18 @@ public class AddEdit implements Initializable {
         return false;
     }
 
+    Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+        s1 = s1.substring(0,19);
+        LocalDateTime ldt = LocalDateTime.parse(s1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime buffldt = ldt;
+        ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));
+        ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
+        ZoneOffset lzo = buffzdt.getOffset();
+        LocalDateTime localTime = zdt.plus(lzo.getTotalSeconds(), ChronoUnit.SECONDS).toLocalDateTime();
+        return localTime;
+    };
 }
+
+
+//todo fix conversion of hours from utc to local
+//todo filter my appt checks for exception control for the current user only

@@ -1158,7 +1158,9 @@ public class HomePage implements Initializable {
                     return cell;
                 });
                 }
-            catch (IndexOutOfBoundsException | NullPointerException ignored){}
+            catch (IndexOutOfBoundsException | NullPointerException e){
+                e.printStackTrace();
+            }
         }
     }
 
