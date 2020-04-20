@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -106,6 +105,7 @@ public class AddEdit implements Initializable {
         this.apptcustomername.set(result.getCustomerName());
     };
 
+
     String apptid = "";
     String apptcustomerid = "";
     String apptconsultantid =  "";
@@ -123,6 +123,7 @@ public class AddEdit implements Initializable {
         this.apptconsultantid = result.getUserId().toString();
         this.apptconsultantname.set(result.getUserName());
     };
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -321,6 +322,8 @@ public class AddEdit implements Initializable {
             startdatetime = startdatetime.concat(apptstarttime.get().substring(2, 4));
             startdatetime = startdatetime.concat(":00");
             String enddatetime = apptenddatepicker.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + apptendtime.get().substring(0, 2) + ":" + apptendtime.get().substring(2, 4) + ":00";
+            startdatetime = this.convertLocalTimetoSQLUTCStr.apply(startdatetime); // convert string back into UTC before adding to DB
+            enddatetime = this.convertLocalTimetoSQLUTCStr.apply(enddatetime); //convert string back into UTC before adding to DB
             if (create) {
                 Main.getDBHelper().runDMS.apply("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdateBy)  values  ('" + apptcustomerid + "', '" + apptconsultantid + "', '" + appttitle.get() + "', '" + apptdescription.get() + "', '" + apptlocation.get() + "', '" + apptcontact.get() + "', '" + appttype.get() + "', '" + appturl.get() + "', '" + startdatetime + "', '" + enddatetime + "', now(), '" + username + "', '" + username + "');");
             } else {
@@ -349,7 +352,7 @@ public class AddEdit implements Initializable {
         String apptdate = apptstartdatepicker.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE);
         String appttomorrow = apptstartdatepicker.getValue().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
         List<Appointment> samedayappts = new ArrayList<Appointment>();
-        ResultSet r1 = Main.getDBHelper().runQuery.apply("SELECT * from appointment WHERE start >= '" + apptdate + " 00:00:00' AND start < '" + appttomorrow + " 00:00:00'");
+        ResultSet r1 = Main.getDBHelper().runQuery.apply("SELECT * from appointment INNER JOIN user u WHERE start >= '" + apptdate + " 00:00:00' AND start < '" + appttomorrow + " 00:00:00' AND userName = '" + this.username + "';");
         try {
             while (r1.next()) {
                 Appointment temp = new Appointment();
@@ -362,18 +365,18 @@ public class AddEdit implements Initializable {
                 temp.setContact(r1.getObject(7).toString());
                 temp.setType(r1.getObject(8).toString());
                 temp.setUrl(r1.getObject(9).toString());
-                temp.setStart(convertSQLUTCStrtoLocalTime.apply(r1.getObject(10).toString().substring(0, 19)));
-                temp.setEnd(convertSQLUTCStrtoLocalTime.apply(r1.getObject(11).toString().substring(0, 19)));
-                temp.setCreateDate(convertSQLUTCStrtoLocalTime.apply(r1.getObject(12).toString().substring(0, 19)));
-                temp.setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r1.getObject(14).toString().substring(0, 19)));
+                temp.setStart(convertSQLUTCStrtoLocalDateTime.apply(r1.getObject(10).toString().substring(0, 19)));
+                temp.setEnd(convertSQLUTCStrtoLocalDateTime.apply(r1.getObject(11).toString().substring(0, 19)));
+                temp.setCreateDate(convertSQLUTCStrtoLocalDateTime.apply(r1.getObject(12).toString().substring(0, 19)));
+                temp.setLastUpdate(convertSQLUTCStrtoLocalDateTime.apply(r1.getObject(14).toString().substring(0, 19)));
                 samedayappts.add(temp);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-
+        }
             for (Appointment appt: samedayappts) {
-                String apptstart = ("00" + Integer.valueOf(appt.getStart().getHour()).toString()).substring(Integer.valueOf(appt.getStart().getHour()).toString().length());
-                String apptend = ("00" + Integer.valueOf(appt.getEnd().getHour()).toString()).substring(Integer.valueOf(appt.getEnd().getHour()).toString().length());
+                String apptstart = (("00" + Integer.valueOf(appt.getStart().getHour()).toString()).substring(Integer.valueOf(appt.getStart().getHour()).toString().length()) + ("00" + Integer.valueOf(appt.getStart().getMinute()).toString()).substring(Integer.valueOf(appt.getStart().getMinute()).toString().length()));
+                String apptend = (("00" + Integer.valueOf(appt.getEnd().getHour()).toString()).substring(Integer.valueOf(appt.getEnd().getHour()).toString().length()) + ("00" + Integer.valueOf(appt.getEnd().getMinute()).toString()).substring(Integer.valueOf(appt.getEnd().getMinute()).toString().length()));
                 if (!((Integer.valueOf(apptstart) <= Integer.valueOf(apptstarttime.get()) && Integer.valueOf(apptend) <= Integer.valueOf(apptstarttime.get())) || (Integer.valueOf(apptstart) >= Integer.valueOf(apptendtime.get()) && Integer.valueOf(apptend) >= Integer.valueOf(apptendtime.get())))){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setHeaderText("Error: Overlapping Appointment");
@@ -383,7 +386,6 @@ public class AddEdit implements Initializable {
                     return true;
                 };
             }
-        }
     return false;
     }
 
@@ -394,7 +396,7 @@ public class AddEdit implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Error: Appointment out of business hours");
             alert.setTitle("Time Error");
-            alert.setContentText("The appointment cannot be scheduled outside of business hours. Please review the times entered and try again.");
+            alert.setContentText("The appointment cannot be scheduled outside of business hours. Please review the times entered and try again." + System.lineSeparator() + System.lineSeparator() + "Please note: regular business hours are between 0800 and 1700.");
             alert.showAndWait();
             return true;
         }
@@ -525,18 +527,16 @@ public class AddEdit implements Initializable {
         return false;
     }
 
-    Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+    Function<String, LocalDateTime> convertSQLUTCStrtoLocalDateTime = (String s1) -> {
         s1 = s1.substring(0,19);
         LocalDateTime ldt = LocalDateTime.parse(s1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime buffldt = ldt;
-        ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));
-        ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
-        ZoneOffset lzo = buffzdt.getOffset();
-        LocalDateTime localTime = zdt.plus(lzo.getTotalSeconds(), ChronoUnit.SECONDS).toLocalDateTime();
-        return localTime;
+        return ldt;
+    };
+
+    Function<String, String> convertLocalTimetoSQLUTCStr = (String s1) -> {
+        String buff = s1.substring(0,10) + "T" + s1.substring(11);
+        ZonedDateTime localdatetime = ZonedDateTime.of(LocalDateTime.parse(buff, DateTimeFormatter.ISO_LOCAL_DATE_TIME), ZoneId.systemDefault());
+        String datestring =  localdatetime.withZoneSameInstant(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + localdatetime.withZoneSameInstant(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_TIME);
+        return datestring;
     };
 }
-
-
-//todo fix conversion of hours from utc to local
-//todo filter my appt checks for exception control for the current user only

@@ -1,11 +1,7 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 public class Appointment {
@@ -51,10 +47,10 @@ public class Appointment {
                 this.id = r.getObject(1).toString();
                 this.customerId = r.getObject(2).toString();
                 this.userId = r.getObject(3).toString();
-                this.start = convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString());
-                this.end = convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString());
-                this.createDate = convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString());
-                this.lastUpdate = convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString());
+                this.start = convertSQLUTCStrtoLocalDateTime.apply(r.getObject(10).toString());
+                this.end = convertSQLUTCStrtoLocalDateTime.apply(r.getObject(11).toString());
+                this.createDate = convertSQLUTCStrtoLocalDateTime.apply(r.getObject(12).toString());
+                this.lastUpdate = convertSQLUTCStrtoLocalDateTime.apply(r.getObject(14).toString());
                 this.customerName = getCustomerStringfromID.apply(this.id);
                 this.consultantName = getConsultantStringfromID.apply(this.id);
             }
@@ -214,15 +210,10 @@ public class Appointment {
     };
 
 
-    Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+    Function<String, LocalDateTime> convertSQLUTCStrtoLocalDateTime = (String s1) -> {
         s1 = s1.substring(0,19);
         LocalDateTime ldt = LocalDateTime.parse(s1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime buffldt = ldt;
-        ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));
-        ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
-        ZoneOffset lzo = buffzdt.getOffset();
-        LocalDateTime localTime = zdt.plus(lzo.getTotalSeconds(), ChronoUnit.SECONDS).toLocalDateTime();
-        return localTime;
+        return ldt;
     };
 
     public String getCustomerName() {

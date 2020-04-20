@@ -954,10 +954,6 @@ public class Lookup implements Initializable {
         }
     }
 
-    public void setpanetoLoad(int i){
-        this.panetoLoad = i;
-    }
-
     public void initdata(String username){
         this.username = username;
     }

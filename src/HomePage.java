@@ -1,8 +1,4 @@
-import com.mysql.cj.Query;
-import com.mysql.cj.xdevapi.SqlStatement;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,22 +14,16 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -351,7 +341,7 @@ public class HomePage implements Initializable {
                 while (r2.next()) {
                     LocalDateTime dt;
                     String hci = Integer.toString(hitcount);
-                    dt = convertSQLUTCStrtoLocalTime.apply(r2.getObject(10).toString());
+                    dt = convertSQLUTCStrtoDateTime.apply(r2.getObject(10).toString());
                     s = s.concat(hci + ".\t" + r2.getObject(4) + "\t" + dt.format(DateTimeFormatter.ISO_LOCAL_DATE) + " " + dt.format(DateTimeFormatter.ISO_LOCAL_TIME) + System.lineSeparator());
                     hitcount++;
                 }
@@ -644,10 +634,10 @@ public class HomePage implements Initializable {
                 weeklyApptArray[index].setUrl(r.getObject(9).toString());
                 weeklyApptArray[index].setCreatedBy(r.getObject(13).toString());
                 weeklyApptArray[index].setLastUpdateBy(r.getObject(15).toString());
-                weeklyApptArray[index].setStart(convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString().substring(0,19)));
-                weeklyApptArray[index].setEnd(convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString().substring(0,19)));
-                weeklyApptArray[index].setCreateDate(convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString().substring(0,19)));
-                weeklyApptArray[index].setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString().substring(0,19)));
+                weeklyApptArray[index].setStart(convertSQLUTCStrtoDateTime.apply(r.getObject(10).toString().substring(0,19)));
+                weeklyApptArray[index].setEnd(convertSQLUTCStrtoDateTime.apply(r.getObject(11).toString().substring(0,19)));
+                weeklyApptArray[index].setCreateDate(convertSQLUTCStrtoDateTime.apply(r.getObject(12).toString().substring(0,19)));
+                weeklyApptArray[index].setLastUpdate(convertSQLUTCStrtoDateTime.apply(r.getObject(14).toString().substring(0,19)));
                 index++;
             }
         }
@@ -1054,7 +1044,6 @@ public class HomePage implements Initializable {
         try{
             int index = 0;
             while(r.next()){
-                String test = r.getObject(10).toString();
                 monthlyApptArray[index] = new Appointment();
                 monthlyApptArray[index].setId(r.getObject(1).toString());
                 monthlyApptArray[index].setCustomerId(r.getObject(2).toString());
@@ -1067,10 +1056,10 @@ public class HomePage implements Initializable {
                 monthlyApptArray[index].setUrl(r.getObject(9).toString());
                 monthlyApptArray[index].setCreatedBy(r.getObject(13).toString());
                 monthlyApptArray[index].setLastUpdateBy(r.getObject(15).toString());
-                monthlyApptArray[index].setStart(convertSQLUTCStrtoLocalTime.apply(r.getObject(10).toString()));
-                monthlyApptArray[index].setEnd(convertSQLUTCStrtoLocalTime.apply(r.getObject(11).toString()));
-                monthlyApptArray[index].setCreateDate(convertSQLUTCStrtoLocalTime.apply(r.getObject(12).toString()));
-                monthlyApptArray[index].setLastUpdate(convertSQLUTCStrtoLocalTime.apply(r.getObject(14).toString()));
+                monthlyApptArray[index].setStart(convertSQLUTCStrtoDateTime.apply(r.getObject(10).toString()));
+                monthlyApptArray[index].setEnd(convertSQLUTCStrtoDateTime.apply(r.getObject(11).toString()));
+                monthlyApptArray[index].setCreateDate(convertSQLUTCStrtoDateTime.apply(r.getObject(12).toString()));
+                monthlyApptArray[index].setLastUpdate(convertSQLUTCStrtoDateTime.apply(r.getObject(14).toString()));
                 index++;
             }
         }
@@ -1158,9 +1147,7 @@ public class HomePage implements Initializable {
                     return cell;
                 });
                 }
-            catch (IndexOutOfBoundsException | NullPointerException e){
-                e.printStackTrace();
-            }
+            catch (IndexOutOfBoundsException | NullPointerException ignored) {}; // this purposely runs through even those indexes that are not used; if the index isn't used it will throw an exception so I want to ignore it here as it won't actually effect anything.
         }
     }
 
@@ -1175,15 +1162,15 @@ public class HomePage implements Initializable {
     public void dms(int i) { }
 
 
-    Function<String, LocalDateTime> convertSQLUTCStrtoLocalTime = (String s1) -> {
+    Function<String, LocalDateTime> convertSQLUTCStrtoDateTime = (String s1) -> {
         s1 = s1.substring(0,19);
         LocalDateTime ldt = LocalDateTime.parse(s1, dateTimeFormatter);
-        LocalDateTime buffldt = ldt;
+    //    LocalDateTime buffldt = ldt;
         ZonedDateTime zdt = ldt.atZone(ZoneId.of("+00:00"));
-        ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
-        ZoneOffset lzo = buffzdt.getOffset();
-        LocalDateTime localTime = zdt.plus(lzo.getTotalSeconds(), ChronoUnit.SECONDS).toLocalDateTime();
-        return localTime;
+    //    ZonedDateTime buffzdt = buffldt.atZone(ZoneId.systemDefault());
+       // ZoneOffset lzo = buffzdt.getOffset();
+      //old   LocalDateTime localTime = zdt.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+        return zdt.toLocalDateTime();
     };
 }
 

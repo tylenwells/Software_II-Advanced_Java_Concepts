@@ -7,7 +7,7 @@ public class JDBCHelper {
     Connection connection;
     public JDBCHelper() {
         this.className = "com.mysql.jdbc.Driver";
-        this.URL = "jdbc:mysql://3.227.166.251:3306/U07BDK";
+        this.URL = "jdbc:mysql://3.227.166.251:3306/U07BDK?serverTimezone=UTC";
         this.user = "U07BDK";
         this.password = "53688976414";
         this.connection = null;
@@ -24,6 +24,12 @@ public class JDBCHelper {
             connection = DriverManager.getConnection(URL, user, password);
             Statement stmt = connection.createStatement();
             stmt.executeQuery("SET time_zone = '+00:00'");
+            ResultSet r = this.runQuery.apply("SELECT @@global.time_zone, @@session.time_zone;");
+            while (r.next()){
+                System.out.println("Global Time Zone: " + r.getObject(1).toString());
+                System.out.println("Session Time Zone: " + r.getObject(2).toString());
+            }
+            System.out.println();
         } catch (SQLException ex) {
             System.out.println("Error getting connection: " + ex.getMessage());
             System.exit(-1);
