@@ -158,8 +158,11 @@ public class AddEdit implements Initializable {
         UnaryOperator<TextFormatter.Change> filter = change -> { //4 digit 24hr time filter
 
             String text = change.getText();
+            String completeText = change.getControlNewText();
             if (text.matches("[0-9]*")) {
-                return change;
+                if (completeText.length() <= 4){
+                    return change;
+                }
             }
             return null;
             /*String text = change.getText();
@@ -498,6 +501,9 @@ public class AddEdit implements Initializable {
             if (appttitle.get().isEmpty() || apptcustomername.get().isEmpty() || apptconsultantname.get().isEmpty() || apptdescription.get().isEmpty() || appttype.get().isEmpty() || apptlocation.get().isEmpty() || apptcontact.get().isEmpty() || appturl.get().isEmpty() || apptstarttime.get().length() != 4 ||apptendtime.get().length() != 4 || apptstartdatepicker.getValue() == null || apptenddatepicker.getValue() == null || apptcustomerid.isEmpty()){
                 return true;
             }
+            if (checktimes() || checkapptbusinesshours() || checkapptoverlap()){
+                return true;
+            }
         }
         else if (i == 1){
             if (customername.get().isEmpty() || customeraddress1.get().isEmpty() || customeraddress2.get().isEmpty() || customercity.get().isEmpty() || customercountry.get().isEmpty() || customerpostalcode.get().isEmpty() || customerphonenumber.get().isEmpty()){
@@ -505,9 +511,7 @@ public class AddEdit implements Initializable {
             }
 
         }
-        if (checktimes() || checkapptbusinesshours() || checkapptoverlap()){
-            return true;
-        }
+
         return false;
     }
 
